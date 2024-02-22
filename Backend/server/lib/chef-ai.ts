@@ -4,7 +4,7 @@ import express, { Router, Request, Response } from 'express';
 import OpenAi from 'openai';
 import dotenv from 'dotenv';
 import { userData } from './userDataSet';
-import { FileName } from './getImage';
+
 
 dotenv.config();
 
@@ -49,35 +49,8 @@ function extractNutrition(output: any) {
 }
 
 export default function AiStuff(): Router {
-
     router.post('/photoGerenration', async (req: Request, res: Response)  => {
-        console.log(FileName)
-        return res.status(200).json({message: FileName});
-    })
-
-    router.post('/photoDetection', async (req: Request, res: Response) => {
-        try {
-            const response = await openai.chat.completions.create({
-                model: "gpt-4-vision-preview",
-                messages: [
-                  {
-                    role: "user",
-                    content: [
-                      { type: "text", text: "What cooking ingredients are in the image?" },
-                      {
-                        type: "image_url",
-                        image_url: {
-                          "url": `../../uploads/${FileName}`,
-                        },
-                      },
-                    ],
-                  },
-                ],
-              });
-              console.log(response);
-        } catch (error) {
-            console.error(error);
-        }
+        
     })
 
     router.post('/chefApi', async (req: Request, res: Response) => {
@@ -133,6 +106,8 @@ export default function AiStuff(): Router {
 
             console.log(output)
 
+
+            // Get Reciepe Name
             const ingredients = extractIngredients(output);
             const instructions = extractInstructions(output);
             const nutrition = extractNutrition(output);
@@ -155,42 +130,58 @@ export default function AiStuff(): Router {
     return router;
 }
 
+export const detectPhotoIngredients = async (fileName: any) => {
+    try {
 
+        // const imagePath = path.join(__dirname, `../../uploads/${fileName}`);
 
+        // const imageBuffer = fs.readFileSync(imagePath);
+        // const base64Image = imageBuffer.toString('base64');
 
+        // const response = await openai.chat.completions.create({
+        //     model: "gpt-4-vision-preview",
+        //     messages: [
+        //         {
+        //             role: "system",
+        //             content: `
+        //             You are an expert at analyzing images with computer vision. In case of error, make a full report of the cause of: any issues in receiving or understanding images.
+        //             Please provide list of all the food ingredients you see in this picture. List the items in the following format:
 
+        //             1. Ingredient1
+        //             2. Ingredient2
+        //             3. Ingredient3
+        //             4. Ingredient4
+        //             ...
 
+        //             Just list the items without any additional context or description.
+        //             Ignore Brand Names.
+        //             `,
+        //         },
+        //         {
+        //             role: "user",
+        //             content: [
+        //                 {
+        //                     type: "image_url",
+        //                     image_url: {
+        //                         "url": `data:image/jpeg;base64,${base64Image}` 
+        //                     }
+        //                 }
+        //             ]
+        //         }
+        //     ],
+        //     max_tokens: 1000
+        // });
 
+        // return response.choices[0].message;
 
-// try{
-//     const chatCompletion = await openai.chat.completions.create({
-//         messages: [{role: "system", content: 
-//         `You are an expert chef, and the user has provided you with images containing ingredients at their disposal. Your task is to guide the user through the cooking process based on the ingredients available and their preferences.
-//         First, identify the ingredients visible in the images and ask the user to confirm them. For example, "I see tomatoes, onions, and garlic in the images. Can you confirm if these are the ingredients you have?"
-//         Next, inquire about any allergies the user may have to ensure the safety of the dish. Ask questions such as, "Do you have any allergies or dietary restrictions I should be aware of?"
-//         Then, ask the user about the type of cuisine they would like to prepare, such as Chinese, Mexican, French, etc. This helps tailor the dish recommendations to their preferences.
-//         Based on the identified ingredients and the user's preferred cuisine, suggest suitable dishes they can prepare. For example, "With the ingredients available, we can make a delicious pasta primavera or a hearty vegetable stir-fry. Which option would you prefer?"
-//         Finally, inquire about the user's dietary regime, such as gluten-free, low-sodium, vegan, etc. This ensures that the dish aligns with their dietary preferences and restrictions.
-//         Once you have gathered all the necessary information, proceed to generate step-by-step cooking procedures for the chosen dish, considering the user's preferences and any dietary restrictions they may have.`},
-//         {role: "user", content: message},],
-//         model: 'gpt-3.5-turbo',
-//     });
-//     return res.status(200).json(chatCompletion)
-
-// } catch (err) {
-//     console.error(err);
-// }
-
-
-
-// Generate a prompt for an assistant ai 
-// in it you explain the following steps :
-// the assistant is an expert chef, images are provided to him, in them ingredients at the user disposal.
-// The assistant first mention ingredients that he can identify and asks the user to confirm what he sees.
-// Second the assistant asks the user the following questions :
-// -if he has any allergies.
-// -What kind of food he wants to eat (for example Chinese, Mexican, French...etc)
-// -propose some dishes based on what the user has.
-// -what regime does the user has (for ex: wi thout gluten, without salt, vegan ...etc)
-
-// then the assistant proceeds to generate the procedures to cook that dish based on all the other questions. 
+        return `'1. Carrots\n' +
+        '2. Zucchini\n' +
+        '3. Eggs\n' +
+        '4. Raw meat (possibly beef)\n' +
+        '5. Sliced carrots\n' +
+        '6. Sliced zucchini'`
+    } catch (error) {
+        console.error(error);
+        throw new Error("An error occurred during the image processing.");
+    }
+};

@@ -1,6 +1,7 @@
 import express, { Router, Request, Response } from 'express';
 import multer from 'multer';
 import path from 'path';
+import { detectPhotoIngredients } from './chef-ai';
 
 const router: Router = express.Router();
 
@@ -22,9 +23,10 @@ const storage = multer.diskStorage({
         cb(null, 'uploads/');
     },
     filename: function (req, file, cb) {
-        let n = 0
-        cb(null, file.originalname);
-        FileName = file.originalname;
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        const ext = path.extname(file.originalname);
+        FileName = file.fieldname + '-' + uniqueSuffix + ext;
+        cb(null, FileName);
     }
 });
 
@@ -32,17 +34,24 @@ const upload = multer({ storage, fileFilter });
 
 export default function(): Router {    
 
-    router.post('/pushImage', upload.array('file', 10), (req: Request, res: Response) => {
-       try{
-           if (!req.files || req.files.length === 0) 
-           return res.status(400).send("No files uploaded.");
-        // else if (req.files.length > 10) 
-        //     return res.status(400).send("You exceeded the max of 10 files");
-        
-        res.status(200).json({message: 'Files uploaded successfully.'});
-       } catch (error) {
-         console.error(error)
-       }
+    router.post('/pushImage', upload.array('file', 3), async (req: Request, res: Response) => {
+        try {
+            const files = req.files as Express.Multer.File[];
+    
+            if (!files || files.length === 0) {
+                return res.status(400).send("No files uploaded.");
+            }
+    
+            const uploadedFilesUrls = files.map(file => {
+                return `http://localhost:4444/uploads/${file.filename}`;
+            });
+            const detectionResult = await detectPhotoIngredients(files[0].filename);
+    
+            res.status(200).json({ message: 'Files uploaded successfully.', files: uploadedFilesUrls, detectionResult });
+        } catch (error) {
+            console.error(error);
+            res.status(500).send("An error occurred during the file upload.");
+        }
     });
 
     return router;

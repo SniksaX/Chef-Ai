@@ -4,65 +4,28 @@ import { SanityClient } from '@sanity/client';
 
 const router: Router = express.Router();
 
-type mealType = {
-    MealType: string | null, //breakfast, lunch, dinner, brunch...
-    EventMeal: string | null, //(see StValentain, Noel, Anniv, thanksgiving, Ramadan, Aid, Pentecote)
-    Meal: string | null, //Entre, plat, dessert...
-}
 
-type EnergyType = {
-    Carbs: number | null, 
-    Protein: number | null,
-    Fats: number | null,
-    Salt: number | null,
-}
-
-type userDataForm = {
-    Allergies: string[] | null,
-    CuisineType: string | null, 
-    Regime: string | null,
-    Ingredients: string | null,
-    Tools: string | null,
-    Time: string | null,
-    Level: string | null
-    NumberOfPlates: number | null,
-    MealType: mealType | null,
-    Energy: EnergyType | null,
-}
-
-export let userData: userDataForm | null = null;
+export let userData = {
+    Allergies: null,
+    CuisineType: null, 
+    Regime: null,
+    Ingredients: null,
+    Tools:null,
+    Time: null,
+    Level: null,
+    NumberOfPlates: null,
+    MealType: null,
+    // Energy: EnergyType | null,
+};
 
 export default function userDataSet(sanity: SanityClient): Router {
 
     //shoot vers DATABASE
     router.post('/userPrefInfo', async (req: Request, res: Response) => {
         try{
-            const { 
-                Ingredients, // >> reponse Vision 
-                Allergies, 
-                CuisineType, 
-                Regime, 
-                Tools, 
-                Time, 
-                Level, 
-                NumberOfPlates, 
-                MealType, 
-                Energy
-            } = req.body;
-            userData = { 
-                Allergies, 
-                CuisineType, 
-                Regime, 
-                Ingredients, 
-                Tools, 
-                Time, 
-                Level, 
-                NumberOfPlates, 
-                MealType, 
-                Energy 
-            };
+            userData = req.body
             console.log(userData)
-            return res.status(200).json({message: 'dataRecieved'})
+            return res.status(200).json({message: 'dataRecieved', success: true})
         }catch(err){
             console.error(err);
         }

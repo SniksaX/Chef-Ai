@@ -2,20 +2,42 @@
 
 //frontend/components/crm//uploadfile.tsx
 import { Button } from "@/components/ui/button";
+import { pushImage } from "@/utils/UserData";
 import { useState } from "react";
 
+interface UploadWindowProps {
+  onDetectionComplete?: (detectedIngredients: string[]) => void;
+}
+
 export default function UploadWindow({
-  setFileName,
-}: {
-  setFileName: React.Dispatch<React.SetStateAction<string[]>>;
-}) {
-  const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
+  onDetectionComplete,
+}: UploadWindowProps) {
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
-      const fileNames = Array.from(event.target.files).map((file) => file.name);
-      setSelectedFiles(fileNames);
-      setFileName(fileNames);
+      setSelectedFiles(Array.from(event.target.files));
+    }
+  };
+
+  const sendImage = async () => {
+    if (!selectedFiles.length) {
+      alert("No files selected");
+      return;
+    }
+
+    const formData = new FormData();
+    selectedFiles.forEach((file) => {
+      formData.append("file", file);
+    });
+
+    const result = await pushImage(formData);
+    if (result.success) {
+      const detectionResults = result.data.detectionResult
+        .split("+")
+        .map((line) => line.trim())
+        .filter((line) => line.length);
+      onDetectionComplete?.(detectionResults);
     }
   };
 
@@ -31,14 +53,20 @@ export default function UploadWindow({
             {selectedFiles.length > 0 && (
               <ul>
                 {selectedFiles.map((file, index) => (
-                  <li key={index}>{file}</li>
+                  <li key={index}>{file.name}</li>
                 ))}
               </ul>
             )}
           </div>
-
-          <input type="file" multiple onChange={handleFileChange} />
-          <Button variant="outline">Submit</Button>
+          <input
+            type="file"
+            multiple
+            accept="image/jpeg,image/png"
+            onChange={handleFileChange}
+          />
+          <Button variant="outline" onClick={sendImage}>
+            Submit
+          </Button>
         </div>
       </div>
     </div>
