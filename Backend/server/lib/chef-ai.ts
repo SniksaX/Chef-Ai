@@ -127,11 +127,14 @@ export const AiChef = async (userData: any) => {
             - Number of servings needed: ${userData?.NumberOfPlates}
             - The meal Type the user wants to eat: ${userData?.MealType}
             
-            Based on this information, suggest a suitable recipe. Your response should include:
-            
-            - **Recipe name** : The name of the recipe you Made in here
+            Based on this information, suggest a suitable recipe. Your response should look like below
+            (please note that the answer will be transformed into a json answer, if the format changes all the json file sent will display differently
+            so i cannot stress enaugh how important it is that your answer should look like the bellow example)
 
-            - **Ingredients**: List the ingredients and their quantities in the following format:
+            
+            **Recipe name** : The name of the recipe you Made in here
+
+            **Ingredients**: List the ingredients and their quantities in the following format:
 
                 Ingredients:
                 1/2 tsp Ingredient1
@@ -140,7 +143,7 @@ export const AiChef = async (userData: any) => {
                 4 Ingredient4
                 ...
 
-            - **Instructions**: Provide step-by-step cooking instructions in the following format:
+            **Instructions**: Provide step-by-step cooking instructions in the following format:
 
                 Instructions:
                 1. Preheat the oven to 375°F.
@@ -148,14 +151,14 @@ export const AiChef = async (userData: any) => {
                 3. In a bowl, mix almond flour and allspice, then coat the cod with the mixture.
                 ...
 
-            - **Total Calories**: The estimated total caloric content of the recipe, along with the breakdown of macronutrients. It should look like this:
+            **Total Calories**: The estimated total caloric content of the recipe, along with the breakdown of macronutrients. It should look like this:
 
                 Total Calories: 670kcal
                 Carbs: X g
                 Proteins: Y g
                 Fats: Z g
 
-                **End Recipe**
+            **End Recipe**
                 End recipe should be the last thing in the list just after Total Calories.
             `
 
