@@ -3,14 +3,19 @@
 import { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { userDataForm } from "@/components/MultiStepForm";
+import { userDataForm } from "@/utils/MyTypes";
 
 interface ToolsFormProps {
   onNext: () => void;
+  onPrev: () => void;
   setAllData: React.Dispatch<React.SetStateAction<userDataForm>>;
 }
 
-export default function ToolsForm({ onNext, setAllData }: ToolsFormProps) {
+export default function ToolsForm({
+  onNext,
+  setAllData,
+  onPrev,
+}: ToolsFormProps) {
   const [isOthersChecked, setIsOthersChecked] = useState(false);
   const [checkedTools, setCheckedTools] = useState({});
   const [othersText, setOthersText] = useState("");
@@ -132,9 +137,14 @@ export default function ToolsForm({ onNext, setAllData }: ToolsFormProps) {
             />
           )}
         </div>
-        <Button className="w-full" onClick={onNextAndSaveData}>
-          Next
-        </Button>
+        <div className="flex-row">
+          <Button className="w-1/2" onClick={onPrev}>
+            Back
+          </Button>
+          <Button className="w-1/2" onClick={onNextAndSaveData}>
+            Next
+          </Button>
+        </div>
       </form>
     </div>
   );

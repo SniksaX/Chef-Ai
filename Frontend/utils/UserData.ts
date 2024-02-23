@@ -9,14 +9,15 @@ export async function SetUserData(userData: userDataForm) {
             body: JSON.stringify(userData),
             headers: {"Content-Type": "application/json"},
         })
-
-        const repJson = await response.json();
         
-        if(repJson.success) {
-            return repJson.success;
-        } else {
-            return repJson.failure;
-        }
+        console.log(response.json)
+        if (response.ok) {
+            const data = await response.json();
+            return { success: true, data };
+          } else {
+            console.error("Server responded with a non-OK status:", response.status);
+            return { success: false };
+          }
     } catch (error) {
         console.log(error);
     }

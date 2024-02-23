@@ -2,15 +2,20 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { userDataForm } from "@/components/MultiStepForm";
 import * as SliderPrimitive from "@radix-ui/react-slider";
+import { userDataForm } from "@/utils/MyTypes";
 
 interface TimeTypeFormProps {
   onNext: () => void;
+  onPrev: () => void;
   setAllData: React.Dispatch<React.SetStateAction<userDataForm>>;
 }
 
-export default function TimeForm({ onNext, setAllData }: TimeTypeFormProps) {
+export default function TimeForm({
+  onNext,
+  setAllData,
+  onPrev,
+}: TimeTypeFormProps) {
   const [value, setValue] = useState([20]);
   const onNextAndSaveData = () => {
     setAllData((prevData) => ({
@@ -77,9 +82,14 @@ export default function TimeForm({ onNext, setAllData }: TimeTypeFormProps) {
           }}
         />
       </SliderPrimitive.Root>
-      <Button className="w-full p-4" onClick={onNextAndSaveData}>
-        Next
-      </Button>
+      <div className="flex-row">
+        <Button className="w-1/2" onClick={onPrev}>
+          Back
+        </Button>
+        <Button className="w-1/2" onClick={onNextAndSaveData}>
+          Next
+        </Button>
+      </div>
     </div>
   );
 }

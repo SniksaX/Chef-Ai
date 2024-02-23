@@ -3,16 +3,18 @@
 import { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { userDataForm } from "@/components/MultiStepForm";
+import { userDataForm } from "@/utils/MyTypes";
 
 interface AllergiesFormProps {
   onNext: () => void;
+  onPrev: () => void;
   setAllData: React.Dispatch<React.SetStateAction<userDataForm>>;
 }
 
 export default function AllergiesForm({
   onNext,
   setAllData,
+  onPrev,
 }: AllergiesFormProps) {
   const [isOthersChecked, setIsOthersChecked] = useState(false);
   const [checkedAllergies, setCheckedAllergies] = useState({});
@@ -130,9 +132,14 @@ export default function AllergiesForm({
             />
           )}
         </div>
-        <Button className="w-full" onClick={onNextAndSaveData}>
-          Next
-        </Button>
+        <div className="flex-row">
+          <Button className="w-1/2" onClick={onPrev}>
+            Back
+          </Button>
+          <Button className="w-1/2" onClick={onNextAndSaveData}>
+            Next
+          </Button>
+        </div>
       </form>
     </div>
   );

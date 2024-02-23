@@ -3,14 +3,19 @@
 import { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { userDataForm } from "@/components/MultiStepForm";
+import { userDataForm } from "@/utils/MyTypes";
 
 interface RegimeFormProps {
   onNext: () => void;
+  onPrev: () => void;
   setAllData: React.Dispatch<React.SetStateAction<userDataForm>>;
 }
 
-export default function RegimeForm({ onNext, setAllData }: RegimeFormProps) {
+export default function RegimeForm({
+  onNext,
+  setAllData,
+  onPrev,
+}: RegimeFormProps) {
   const [isOthersChecked, setIsOthersChecked] = useState(false);
   const [checkedRegime, setCheckedRegime] = useState({});
   const [othersText, setOthersText] = useState("");
@@ -127,9 +132,14 @@ export default function RegimeForm({ onNext, setAllData }: RegimeFormProps) {
             />
           )}
         </div>
-        <Button className="w-full" onClick={onNextAndSaveData}>
-          Next
-        </Button>
+        <div className="flex-row">
+          <Button className="w-1/2" onClick={onPrev}>
+            Back
+          </Button>
+          <Button className="w-1/2" onClick={onNextAndSaveData}>
+            Next
+          </Button>
+        </div>
       </form>
     </div>
   );

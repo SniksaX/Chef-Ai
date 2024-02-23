@@ -11,75 +11,157 @@ import MealTypeForm from "./formUserInfo/MealType";
 import TimeForm from "./formUserInfo/Time";
 import NumberOfPlatesForm from "./formUserInfo/NumberOfPlates";
 import LevelForm from "./formUserInfo/Level";
-import { useRouter } from "next/navigation";
 import { SetUserData } from "@/utils/UserData";
 import IngerdiantsForm from "./formUserInfo/Ingredients";
+import { userDataForm } from "@/utils/MyTypes";
 
-export type userDataForm = {
-  AllergiesData: string | null;
-  CuisineTypeData: string | null;
-  RegimeData: string | null;
-  IngredientsData: string | null;
-  ToolsData: string | null;
-  TimeData: number[] | null;
-  LevelData: string | null;
-  NumberOfPlatesData: number[] | null;
-  MealTypeData: string | null;
-  // EnergyData: string | null;
-};
+interface AiResponse {
+  ingredients: string[];
+  instruction: string[];
+  totalCalories: string[];
+}
 
-export default function MultiStepForm() {
-  const router = useRouter();
+interface MultiStepFormProps {
+  setAllData: React.Dispatch<React.SetStateAction<userDataForm>>;
+  setAiResponse: React.Dispatch<React.SetStateAction<AiResponse>>;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  aiResponse: AiResponse;
+  allData: userDataForm;
+}
+
+export default function MultiStepForm({
+  setAllData,
+  setAiResponse,
+  allData,
+  setIsLoading,
+}: MultiStepFormProps) {
   const [currentStep, setCurrentStep] = useState(1);
-  const [allData, setAllData] = useState<userDataForm>({
-    AllergiesData: null,
-    CuisineTypeData: null,
-    RegimeData: null,
-    IngredientsData: null,
-    ToolsData: null,
-    TimeData: null,
-    LevelData: null,
-    NumberOfPlatesData: null,
-    MealTypeData: null,
-    // EnergyData: null,
-  });
 
   const nextStep = () => setCurrentStep(currentStep + 1);
+  const prevStep = () => setCurrentStep(currentStep - 1);
+
+  const extractSection = (text: any, startMarker: any, endMarker: any) => {
+    const startIndex = text.indexOf(startMarker) + startMarker.length;
+    const endIndex = text.indexOf(endMarker, startIndex);
+    return text.substring(startIndex, endIndex).trim();
+  };
 
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true);
       if (currentStep > 9) {
         const response = await SetUserData(allData);
-        if (response === true) {
-          router.push("/");
+        if (response?.success) {
+          const recipeName = extractSection(
+            response.data.recipe,
+            "**Recipe Name**:",
+            "**Ingredients**:"
+          );
+          const ingredients = extractSection(
+            response.data.recipe,
+            "**Ingredients**:",
+            "**Instructions**:"
+          ).split("\n");
+          const instructions = extractSection(
+            response.data.recipe,
+            "**Instructions**:",
+            "**Total Calories**:"
+          ).split("\n");
+          const totalCalories = extractSection(
+            response.data.recipe,
+            "**Total Calories**:",
+            "**End Recipe**"
+          ).split("\n");
+
+          setAiResponse((prevAiResponse) => ({
+            recipeName: recipeName,
+            ingredients: [...prevAiResponse.ingredients, ...ingredients],
+            instruction: [...prevAiResponse.instruction, ...instructions],
+            totalCalories: [...prevAiResponse.totalCalories, totalCalories], // Adjust this if totalCalories should be handled differently
+          }));
         }
+        setIsLoading(false);
       }
     };
     fetchData();
-  });
+  }, [currentStep]);
 
   const renderForm = () => {
     switch (currentStep) {
       case 1:
         return <IngerdiantsForm onNext={nextStep} setAllData={setAllData} />;
       case 2:
-        return <CuisineTypeForm onNext={nextStep} setAllData={setAllData} />;
+        return (
+          <AllergiesForm
+            onNext={nextStep}
+            onPrev={prevStep}
+            setAllData={setAllData}
+          />
+        );
       case 3:
-        return <ToolsForm onNext={nextStep} setAllData={setAllData} />;
+        return (
+          <ToolsForm
+            onNext={nextStep}
+            onPrev={prevStep}
+            setAllData={setAllData}
+          />
+        );
       case 4:
-        return <RegimeForm onNext={nextStep} setAllData={setAllData} />;
+        return (
+          <RegimeForm
+            onNext={nextStep}
+            onPrev={prevStep}
+            setAllData={setAllData}
+          />
+        );
       case 5:
-        return <MealTypeForm onNext={nextStep} setAllData={setAllData} />;
+        return (
+          <MealTypeForm
+            onNext={nextStep}
+            onPrev={prevStep}
+            setAllData={setAllData}
+          />
+        );
       case 5:
-        return <EventForm onNext={nextStep} setAllData={setAllData} />;
+        return (
+          <EventForm
+            onNext={nextStep}
+            onPrev={prevStep}
+            setAllData={setAllData}
+          />
+        );
       case 6:
-        return <TimeForm onNext={nextStep} setAllData={setAllData} />;
+        return (
+          <CuisineTypeForm
+            onNext={nextStep}
+            onPrev={prevStep}
+            setAllData={setAllData}
+          />
+        );
       case 7:
-        return <NumberOfPlatesForm onNext={nextStep} setAllData={setAllData} />;
+        return (
+          <NumberOfPlatesForm
+            onNext={nextStep}
+            onPrev={prevStep}
+            setAllData={setAllData}
+          />
+        );
       case 8:
-        return <LevelForm onNext={nextStep} setAllData={setAllData} />;
+        return (
+          <LevelForm
+            onNext={nextStep}
+            onPrev={prevStep}
+            setAllData={setAllData}
+          />
+        );
       case 9:
-        return <AllergiesForm onNext={nextStep} setAllData={setAllData} />;
+        return (
+          <TimeForm
+            onNext={nextStep}
+            onPrev={prevStep}
+            setAllData={setAllData}
+          />
+        );
 
       default:
         return <div>Form Completed</div>;

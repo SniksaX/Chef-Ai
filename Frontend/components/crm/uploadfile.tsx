@@ -33,8 +33,8 @@ export default function UploadWindow({
 
     const result = await pushImage(formData);
     if (result.success) {
-      const detectionResults = result.data.detectionResult
-        .split("+")
+      const detectionResults = result.data.detectionResult.content
+        .split("\n")
         .map((line) => line.trim())
         .filter((line) => line.length);
       onDetectionComplete?.(detectionResults);

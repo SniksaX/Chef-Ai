@@ -5,7 +5,7 @@ import { Camera } from "lucide-react";
 import { Input } from "../ui/input";
 import Modal from "../Modal";
 import UploadWindow from "../crm/uploadfile";
-import { userDataForm } from "../MultiStepForm";
+import { userDataForm } from "@/utils/MyTypes";
 
 interface IngredientsFormProps {
   onNext: () => void;

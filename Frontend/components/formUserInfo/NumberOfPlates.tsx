@@ -2,17 +2,19 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { userDataForm } from "@/components/MultiStepForm";
 import * as SliderPrimitive from "@radix-ui/react-slider";
+import { userDataForm } from "@/utils/MyTypes";
 
 interface NumberOfPlatesTypeFormProps {
   onNext: () => void;
+  onPrev: () => void;
   setAllData: React.Dispatch<React.SetStateAction<userDataForm>>;
 }
 
 export default function NumberOfPlatesForm({
   onNext,
   setAllData,
+  onPrev,
 }: NumberOfPlatesTypeFormProps) {
   const [value, setValue] = useState([1]);
   const onNextAndSaveData = () => {
@@ -78,9 +80,14 @@ export default function NumberOfPlatesForm({
           }}
         />
       </SliderPrimitive.Root>
-      <Button className="w-full p-4" onClick={onNextAndSaveData}>
-        Next
-      </Button>
+      <div className="flex-row">
+        <Button className="w-1/2" onClick={onPrev}>
+          Back
+        </Button>
+        <Button className="w-1/2" onClick={onNextAndSaveData}>
+          Next
+        </Button>
+      </div>
     </div>
   );
 }

@@ -3,16 +3,18 @@
 import { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { userDataForm } from "@/components/MultiStepForm";
+import { userDataForm } from "@/utils/MyTypes";
 
 interface MealTypeFormProps {
   onNext: () => void;
+  onPrev: () => void;
   setAllData: React.Dispatch<React.SetStateAction<userDataForm>>;
 }
 
 export default function MealTypeForm({
   onNext,
   setAllData,
+  onPrev,
 }: MealTypeFormProps) {
   const [isOthersChecked, setIsOthersChecked] = useState(false);
   const [checkedMealType, setCheckedMealType] = useState({});
@@ -114,9 +116,14 @@ export default function MealTypeForm({
             />
           )}
         </div>
-        <Button className="w-full" onClick={onNextAndSaveData}>
-          Next
-        </Button>
+        <div className="flex-row">
+          <Button className="w-1/2" onClick={onPrev}>
+            Back
+          </Button>
+          <Button className="w-1/2" onClick={onNextAndSaveData}>
+            Next
+          </Button>
+        </div>
       </form>
     </div>
   );
