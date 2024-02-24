@@ -9,4 +9,13 @@ export type userDataForm = {
     NumberOfPlatesData: number[] | null;
     MealTypeData: string | null;
     // EnergyData: string | null;
-  };
+};
+
+export type userDataRegisterType = {
+  firstName: string | null;
+  lastName: string | null;
+  password: string | null;
+  email: string | null;
+  phone: string | null;
+  age: number | null;
+}

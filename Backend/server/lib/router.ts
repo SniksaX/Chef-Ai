@@ -5,6 +5,7 @@ import userDataSet from './userDataSet';
 import GetImage from './getImage';
 import AiStuff from './chef-ai';
 import path from "path";
+import Auth from './auth';
 
 const router: Router = express.Router();
 
@@ -16,6 +17,7 @@ export default function createRouter(sanity: SanityClient): Router {
     router.use('/', userDataSet(sanity));
     router.use('/', AiStuff());
     router.use('/', GetImage());
+    router.use('/', Auth(sanity))
     router.use('/uploads', express.static(path.join(__dirname, '../../uploads')));
     
     router.all('*', async (req, res) => {

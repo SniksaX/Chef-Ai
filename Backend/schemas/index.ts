@@ -1,5 +1,5 @@
-import rdv from './rdv';
+import userData from './userData';
 
 export const schemaTypes = [
-    rdv,
+    userData,
 ];

@@ -6,9 +6,11 @@ import { Button } from "./ui/button";
 import LoginPage from "./mainPage/Login/Login";
 import Modal from "./Modal";
 import { useRouter } from "next/navigation";
+import SigninPage from "./mainPage/Signin/Signin";
 
 const Navbar = () => {
-  const [showModal, setShowModal] = useState(false);
+  const [showModalLogin, setShowModalLogin] = useState(false);
+  const [showModalSignin, setshowModalSignin] = useState(false);
   const router = useRouter();
 
   const handleSignUp = () => {
@@ -25,19 +27,28 @@ const Navbar = () => {
           <button className="text-sm font-medium hover:underline underline-offset-4 hover:bg-white text-black">
             Home
           </button>
-          <Modal isvisible={showModal} onClose={() => setShowModal(false)}>
+          <Modal
+            isvisible={showModalLogin}
+            onClose={() => setShowModalLogin(false)}
+          >
             <LoginPage />
+          </Modal>
+          <Modal
+            isvisible={showModalSignin}
+            onClose={() => setshowModalSignin(false)}
+          >
+            <SigninPage />
           </Modal>
 
           <button
             className="text-sm font-medium hover:underline underline-offset-4 bg-white hover:bg-white text-black"
-            onClick={() => setShowModal(true)}
+            onClick={() => setShowModalLogin(true)}
           >
             Login
           </button>
           <button
             className="text-sm font-medium hover:underline underline-offset-4 bg-white hover:bg-white text-black"
-            onClick={handleSignUp}
+            onClick={() => setshowModalSignin(true)}
           >
             Sign-up
           </button>

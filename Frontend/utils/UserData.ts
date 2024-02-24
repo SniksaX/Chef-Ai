@@ -1,5 +1,4 @@
-import  { dataUser } from "./MyTypes";
-import { userDataForm } from "@/components/MultiStepForm"
+import { userDataForm } from "./MyTypes";
 
 export async function SetUserData(userData: userDataForm) {
     try {
