@@ -41,6 +41,10 @@ export default function userDataSet(sanity: SanityClient): Router {
         }
     });
 
+    router.post('/test', async (req: Request, res: Response) => {
+        return res.status(200).json({message: 'test Passed'})
+    })
+
     return (router) ;
 }
 

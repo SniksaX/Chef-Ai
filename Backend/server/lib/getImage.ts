@@ -42,12 +42,9 @@ export default function(): Router {
                 return res.status(400).send("No files uploaded.");
             }
     
-            const uploadedFilesUrls = files.map(file => {
-                return `http://localhost:4444/uploads/${file.filename}`;
-            });
             const detectionResult = await detectPhotoIngredients(files[0].filename);
     
-            res.status(200).json({ message: 'Files uploaded successfully.', files: uploadedFilesUrls, detectionResult });
+            res.status(200).json({ message: 'Files uploaded successfully.', detectionResult });
         } catch (error) {
             console.error(error);
             res.status(500).send("An error occurred during the file upload.");

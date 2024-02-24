@@ -4,7 +4,7 @@ import React from "react";
 const Register = () => {
   return (
     <>
-      <LoginPage></LoginPage>
+      <LoginPage />
     </>
   );
 };

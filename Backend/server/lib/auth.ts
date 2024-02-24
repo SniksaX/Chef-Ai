@@ -1,9 +1,8 @@
-//Backend/server/lib/userDataSet.ts
+//Backend/server/lib/auth.ts
 import express, { Router, Request, Response } from 'express';
 import { SanityClient } from '@sanity/client';
 import bcrypt from 'bcrypt';
 import passport from 'passport';
-
 
 const router: Router = express.Router();
 
@@ -52,18 +51,13 @@ export default function Auth(sanity: SanityClient): Router {
             req.logIn(user, async (loginErr) => {
                 if (loginErr) {
                     return next(loginErr);
-                } 
-                // res.cookie('session', JSON.stringify(req.session), { httpOnly: true }); // Set cookie manually if needed
+                }
+                req.session.userData = { email: user.email, lastName: user.lastName };
+                req.session.cookie.maxAge = 24 * 60 * 60 * 3600;
                 return res.status(200).json({ message: 'Login successful.' });
             });
         })(req, res, next);
     });
-
-    router.post('/test', async (req: Request, res: Response) => {
-        const {email, password} = req.body
-        const user = await sanity.fetch('*[_type == "userData" && email == $email][0]', {email})
-        console.log(user)
-    })
 
     return (router) ;
 }

@@ -39,24 +39,29 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use(session({
-    secret: 'SECRET_KEY2',
+    secret: SECRET_KEY2,
     resave: false,
-    saveUninitialized: true,
-    cookie: { secure: process.env.NODE_ENV === "production" },
-  }));
+    saveUninitialized: false,
+    cookie: {
+        secure: process.env.NODE_ENV === "production",
+        httpOnly: true, 
+        sameSite: 'lax',
+    },
+}));
 
 app.use(passport.initialize());
 app.use(passport.session());
 
 
 
-passport.serializeUser((user, done) => {
-    done(null, user);
+passport.serializeUser((user: any, done) => {
+    done(null, user.email);
 });
 
-passport.deserializeUser(async (id, done) => {
+passport.deserializeUser(async (email, done) => {
     try {
-        const user = await sanity.fetch('*[_type == "account" && _id == $id][0]', { id });
+        const user = await sanity.fetch('*[_type == "userData" && email == $email][0]', { email });
+        console.log(user)
         if (!user) {
             return done(new Error('User not found'), null);
         }
@@ -78,7 +83,6 @@ passport.use('local', new LocalStrategy(
             if (!user || !(await bcrypt.compare(password, user.password))) {
                 return done(null, false, { message: 'Invalid email or password' });
             }
-            console.log(user)
             return done(null, user);
         } catch (error) {
             return done(error);

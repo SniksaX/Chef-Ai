@@ -19,3 +19,8 @@ export type userDataRegisterType = {
   phone: string | null;
   age: number | null;
 }
+
+export type userDataLoginType = {
+  email: string | null;
+  password: string | null;
+}

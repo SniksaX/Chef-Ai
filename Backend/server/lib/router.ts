@@ -4,8 +4,8 @@ import { SanityClient } from '@sanity/client';
 import userDataSet from './userDataSet';
 import GetImage from './getImage';
 import AiStuff from './chef-ai';
-import path from "path";
 import Auth from './auth';
+
 
 const router: Router = express.Router();
 
@@ -14,11 +14,21 @@ export default function createRouter(sanity: SanityClient): Router {
     router.use(express.json());
     router.use(express.urlencoded({ extended: true }));
 
-    router.use('/', userDataSet(sanity));
-    router.use('/', AiStuff());
-    router.use('/', GetImage());
+    const requireAuth = (req: any, res: any, next: any) => {
+        if (req.isAuthenticated()) {
+            next();
+        } else {
+            res.status(403).json({
+                msg: "Access Denied",
+                code: 403,
+            });
+        }
+    }
+
     router.use('/', Auth(sanity))
-    router.use('/uploads', express.static(path.join(__dirname, '../../uploads')));
+    router.use('/', AiStuff());
+    router.use('/', requireAuth ,userDataSet(sanity));
+    router.use('/', requireAuth ,GetImage());
     
     router.all('*', async (req, res) => {
         try {

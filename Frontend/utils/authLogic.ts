@@ -1,3 +1,5 @@
+//frontened/utils/authLogic.ts
+
 import { userDataLoginType, userDataRegisterType } from "./MyTypes";
 
 
