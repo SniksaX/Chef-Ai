@@ -41,10 +41,13 @@ export default function(): Router {
             if (!files || files.length === 0) {
                 return res.status(400).send("No files uploaded.");
             }
-    
             const detectionResult = await detectPhotoIngredients(files[0].filename);
-    
-            res.status(200).json({ message: 'Files uploaded successfully.', detectionResult });
+            // const detectionResult = {
+            //             content: "test"
+            // } 
+            // setTimeout(() => res.status(200).json({ message: 'Files uploaded successfully.', detectionResult }), 4000);
+            return res.status(200).json({ message: 'Files uploaded successfully.', detectionResult })
+            
         } catch (error) {
             console.error(error);
             res.status(500).send("An error occurred during the file upload.");

@@ -36,6 +36,9 @@ export default function userDataSet(sanity: SanityClient): Router {
             }
             const recipe = await AiChef(userData)
             return res.status(200).json({message: 'recipe Generated successfuly', recipe})
+            // const recipe = "test"
+            // setTimeout(() => res.status(200).json({message: 'recipe Generated successfuly', recipe}), 4000)
+
         }catch(err){
             console.error(err);
         }

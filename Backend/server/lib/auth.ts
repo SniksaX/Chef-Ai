@@ -52,12 +52,40 @@ export default function Auth(sanity: SanityClient): Router {
                 if (loginErr) {
                     return next(loginErr);
                 }
-                req.session.userData = { email: user.email, lastName: user.lastName };
                 req.session.cookie.maxAge = 24 * 60 * 60 * 3600;
+                // res.cookie('session', {  username: user.lastName }, { httpOnly: true });
                 return res.status(200).json({ message: 'Login successful.' });
             });
         })(req, res, next);
     });
+
+    // router.post('/logout', async (req: Request, res: Response) => {
+    //     try {
+    //         if (req.isAuthenticated()) {
+    //             req.logout();
+    //             res.status(200).json({
+    //                 timestamp: Date.now(),
+    //                 msg: 'Logged out',
+    //                 code: 200,
+    //             });
+    //         } else {
+    //             res.status(403).json({
+    //                 timestamp: Date.now(),
+    //                 error: 'Access Denied',
+    //                 code: 403,
+    //                 msg: 'You must be online and logged in to perform this action.',
+    //             });
+    //         }
+    //     } catch (e) {
+    //         console.error(new Error(e.message));
+    //         res.status(500).json({
+    //             timestamp: Date.now(),
+    //             error: 'Internal Server Error',
+    //             code: 500,
+    //             msg: 'Failed to log out.',
+    //         });
+    //     }
+    //     });
 
     return (router) ;
 }
