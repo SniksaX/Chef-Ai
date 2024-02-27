@@ -40,38 +40,16 @@ export default function MultiStepForm({
   const nextStep = () => setCurrentStep(currentStep + 1);
   const prevStep = () => setCurrentStep(currentStep - 1);
 
-  const extractSection = (text: any, startMarker: any, endMarker: any) => {
-    const startIndex = text.indexOf(startMarker) + startMarker.length;
-    const endIndex = text.indexOf(endMarker, startIndex);
-    return text.substring(startIndex, endIndex).trim();
-  };
-
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
       if (currentStep > 9) {
         const response = await SetUserData(allData);
         if (response?.success) {
-          const recipeName = extractSection(
-            response.data.recipe,
-            "**Recipe Name**:",
-            "**Ingredients**:"
-          );
-          const ingredients = extractSection(
-            response.data.recipe,
-            "**Ingredients**:",
-            "**Instructions**:"
-          ).split("\n");
-          const instructions = extractSection(
-            response.data.recipe,
-            "**Instructions**:",
-            "**Total Calories**:"
-          ).split("\n");
-          const totalCalories = extractSection(
-            response.data.recipe,
-            "**Total Calories**:",
-            "**End Recipe**"
-          ).split("\n");
+          const recipeName = response.data.recipeName;
+          const ingredients = response.data.ingredients;
+          const instructions = response.data.instructions;
+          const totalCalories = response.data.totalCalories;
 
           setAiResponse((prevAiResponse) => ({
             recipeName: recipeName,

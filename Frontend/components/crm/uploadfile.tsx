@@ -3,14 +3,21 @@
 //frontend/components/crm//uploadfile.tsx
 import { Button } from "@/components/ui/button";
 import { pushImage } from "@/utils/UserData";
-import { useState } from "react";
+import { LoaderIcon } from "@/utils/animation";
+import { SetStateAction, useState } from "react";
 
 interface UploadWindowProps {
   onDetectionComplete?: (detectedIngredients: string[]) => void;
+  setShowModal: React.Dispatch<SetStateAction<boolean>>;
+  setIsLoading: React.Dispatch<SetStateAction<boolean>>;
+  isLoading: boolean;
 }
 
 export default function UploadWindow({
   onDetectionComplete,
+  setShowModal,
+  setIsLoading,
+  isLoading,
 }: UploadWindowProps) {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
@@ -38,10 +45,12 @@ export default function UploadWindow({
         .map((line) => line.trim())
         .filter((line) => line.length);
       onDetectionComplete?.(detectionResults);
+      setIsLoading(false);
+      setShowModal(false);
     }
   };
 
-  return (
+  return !isLoading ? (
     <div
       className="flex flex-col items-center justify-center h-screen bg-gray-100 dark:bg-gray-900"
       style={{ width: "70%", height: "60%" }}
@@ -64,11 +73,31 @@ export default function UploadWindow({
             accept="image/jpeg,image/png"
             onChange={handleFileChange}
           />
-          <Button variant="outline" onClick={sendImage}>
-            Submit
-          </Button>
+          <div className="flex">
+            <Button
+              variant="outline"
+              onClick={() => {
+                sendImage();
+                setIsLoading(true);
+              }}
+            >
+              Submit
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowModal(false);
+              }}
+            >
+              close
+            </Button>
+          </div>
         </div>
       </div>
+    </div>
+  ) : (
+    <div className="flex justify-center items-center mb-2">
+      <LoaderIcon className=" text-gray-600 animate-spin" />
     </div>
   );
 }

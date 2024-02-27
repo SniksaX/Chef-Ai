@@ -58,10 +58,21 @@ passport.serializeUser((user: any, done) => {
     done(null, user.email);
 });
 
+export let userInformation = {
+    email: null,
+    phone: null,
+    _createdAt: null,
+    _rev: null,
+    age: null,
+    firstName: null,
+    lastName: null,
+    _id: null,
+};
+
 passport.deserializeUser(async (email, done) => {
     try {
         const user = await sanity.fetch('*[_type == "userData" && email == $email][0]', { email });
-        console.log(user)
+        userInformation = user
         if (!user) {
             return done(new Error('User not found'), null);
         }

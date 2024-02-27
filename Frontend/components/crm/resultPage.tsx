@@ -5,6 +5,9 @@ import { useEffect, useState } from "react";
 import Modal from "../Modal";
 import MultiStepForm from "../MultiStepForm";
 import { userDataForm } from "@/utils/MyTypes";
+import { LoaderIcon } from "@/utils/animation";
+import LoadingModal from "../LoadingModal";
+import AddShoping from "../formUserInfo/ShopingList";
 
 interface AiResponse {
   recipeName: string | null;
@@ -15,6 +18,7 @@ interface AiResponse {
 
 export default function ResultPage() {
   const [showModal, setShowModal] = useState<boolean>(true);
+  const [showShopingList, setShowShopingList] = useState(false);
   const [allData, setAllData] = useState<userDataForm>({
     IngredientsData: null,
     AllergiesData: null,
@@ -33,10 +37,6 @@ export default function ResultPage() {
     totalCalories: [],
   });
   const [isLoading, setIsloading] = useState<boolean>();
-
-  useEffect(() => {
-    console.log(aiResponse);
-  }, [aiResponse]);
 
   return (
     <div>
@@ -88,11 +88,16 @@ export default function ResultPage() {
           <p>{allData.LevelData}</p>
         </div>
         <div className="mb-4">
-          <h2 className="font-semibold mb-1">Ingredients:</h2>
+          <div className="flex items-center">
+            <h2 className="font-semibold mb-1 mr-2">Ingredients:</h2>
+            <button onClick={() => setShowShopingList(true)}>
+              <Copy />
+            </button>
+          </div>
           <ul className="list-disc pl-5">
             {aiResponse.ingredients &&
-              aiResponse.ingredients.map((ingredients, index) => (
-                <li key={index}>{ingredients}</li>
+              aiResponse.ingredients.map((ingredient, index) => (
+                <li key={index}>{ingredient}</li>
               ))}
           </ul>
         </div>
@@ -128,6 +133,13 @@ export default function ResultPage() {
           </ol>
         </div>
       </div>
+      <Modal
+        isvisible={showShopingList}
+        onClose={() => setShowShopingList(false)}
+      >
+        <AddShoping />
+        {/* ingredients={aiResponse.ingredients} */}
+      </Modal>
       <Modal isvisible={isLoading} onClose={() => setIsloading(false)}>
         <LoaderIcon className="text-gray-600 animate-spin"></LoaderIcon>
       </Modal>
@@ -141,32 +153,6 @@ export default function ResultPage() {
         />
       </Modal>
     </div>
-  );
-}
-
-function LoaderIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <line x1="12" x2="12" y1="2" y2="6" />
-      <line x1="12" x2="12" y1="18" y2="22" />
-      <line x1="4.93" x2="7.76" y1="4.93" y2="7.76" />
-      <line x1="16.24" x2="19.07" y1="16.24" y2="19.07" />
-      <line x1="2" x2="6" y1="12" y2="12" />
-      <line x1="18" x2="22" y1="12" y2="12" />
-      <line x1="4.93" x2="7.76" y1="19.07" y2="16.24" />
-      <line x1="16.24" x2="19.07" y1="7.76" y2="4.93" />
-    </svg>
   );
 }
 
@@ -187,6 +173,25 @@ function ShareIcon(props) {
       <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
       <polyline points="16 6 12 2 8 6" />
       <line x1="12" x2="12" y1="2" y2="15" />
+    </svg>
+  );
+}
+
+function Copy() {
+  return (
+    <svg
+      width="30"
+      height="30"
+      viewBox="0 0 15 15"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M3.625 7.5C3.625 8.12132 3.12132 8.625 2.5 8.625C1.87868 8.625 1.375 8.12132 1.375 7.5C1.375 6.87868 1.87868 6.375 2.5 6.375C3.12132 6.375 3.625 6.87868 3.625 7.5ZM8.625 7.5C8.625 8.12132 8.12132 8.625 7.5 8.625C6.87868 8.625 6.375 8.12132 6.375 7.5C6.375 6.87868 6.87868 6.375 7.5 6.375C8.12132 6.375 8.625 6.87868 8.625 7.5ZM12.5 8.625C13.1213 8.625 13.625 8.12132 13.625 7.5C13.625 6.87868 13.1213 6.375 12.5 6.375C11.8787 6.375 11.375 6.87868 11.375 7.5C11.375 8.12132 11.8787 8.625 12.5 8.625Z"
+        fill="currentColor"
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+      ></path>
     </svg>
   );
 }

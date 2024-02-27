@@ -6,6 +6,7 @@ import { Input } from "../ui/input";
 import Modal from "../Modal";
 import UploadWindow from "../crm/uploadfile";
 import { userDataForm } from "@/utils/MyTypes";
+import LoadingModal from "../LoadingModal";
 
 interface IngredientsFormProps {
   onNext: () => void;
@@ -17,8 +18,9 @@ export default function IngredientsForm({
   setAllData,
 }: IngredientsFormProps) {
   const [ingredients, setIngredients] = useState<string[]>([]);
-  const [othersText, setOthersText] = useState("");
-  const [showModal, setShowModal] = useState(false);
+  const [othersText, setOthersText] = useState<string>("");
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const addDetectedIngredients = (detectedIngredients: string[]) => {
     setIngredients((prevIngredients) => [
@@ -94,9 +96,14 @@ export default function IngredientsForm({
       <Button className="w-full mt-4" onClick={onNextAndSaveData}>
         Next
       </Button>
-      <Modal isvisible={showModal} onClose={() => setShowModal(false)}>
-        <UploadWindow onDetectionComplete={addDetectedIngredients} />
-      </Modal>
+      <LoadingModal isvisible={showModal} onClose={() => setShowModal(false)}>
+        <UploadWindow
+          onDetectionComplete={addDetectedIngredients}
+          setShowModal={setShowModal}
+          setIsLoading={setIsLoading}
+          isLoading={isLoading}
+        />
+      </LoadingModal>
     </div>
   );
 }

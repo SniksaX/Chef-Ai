@@ -1,6 +1,6 @@
 export default {
     name: 'userData',
-    title: 'info about user Logs',
+    title: 'User Data',
     type: 'document',
     fields: [
         {

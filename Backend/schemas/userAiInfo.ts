@@ -1,6 +1,6 @@
 export default {
     name: 'userAiInfo',
-    title: 'info about user preferences in food',
+    title: 'User Ai info',
     type: 'document',
     fields: [
         {
@@ -32,11 +32,6 @@ export default {
         {
             name: 'level',
             title:'Level',
-            type:'string',
-        },
-        {
-            name: 'numberOfPlates',
-            title:'number of plates',
             type:'string',
         },
         {

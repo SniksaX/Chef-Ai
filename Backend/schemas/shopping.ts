@@ -1,48 +1,37 @@
 export default {
-    name: 'shoping',
-    title: 'info about user preferences in food',
+    name: 'shoppingList',
+    title: 'Shopping List',
     type: 'document',
     fields: [
         {
             name: 'userData',
-            title: 'userData',
+            title: 'User Data',
             type: 'reference',
             to: [{ type: 'userData' }],
         },
         {
-            name: 'allergies',
-            title:'Allergies',
-            type:'string',
+            name: 'items',
+            title: 'Items List',
+            type: 'array',
+            of: [
+                {
+                type: 'string',
+                title: 'items'
+                }
+            ],
         },
         {
-            name: 'cuisineType',
-            title:'cuisine type',
-            type:'string',
-        },
-        {
-            name: 'ingredients',
-            title:'Ingredients',
-            type:'string',
-        },
-        {
-            name: 'tools',
-            title:'Tools',
-            type:'string',
-        },
-        {
-            name: 'level',
-            title:'Level',
-            type:'string',
-        },
-        {
-            name: 'numberOfPlates',
-            title:'number of plates',
-            type:'string',
-        },
-        {
-            name: 'mealType',
-            title:'Meal Type',
-            type:'string',
+            name: 'status',
+            title: 'Status',
+            type: 'string',
+            options: {
+                list: [
+                    { title: 'Pending', value: 'pending' },
+                    { title: 'Completed', value: 'completed' },
+                    { title: 'Cancelled', value: 'cancelled' },
+                ],
+                layout: 'radio',
+            },
         },
     ],
 };

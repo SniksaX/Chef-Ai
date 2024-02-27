@@ -162,14 +162,51 @@ export const AiChef = async (userData: any) => {
                 End recipe should be the last thing in the list just after Total Calories.
             `
 
-            const chatCompletion = await openai.chat.completions.create({
-                messages: [
-                {role: "system", content: prompt},
-            ],
-                model: 'gpt-4-0125-preview',
-            });
-            const output = chatCompletion.choices[0].message.content;
-            console.log(output)
+            // const chatCompletion = await openai.chat.completions.create({
+            //     messages: [
+            //     {role: "system", content: prompt},
+            // ],
+            //     model: 'gpt-4-0125-preview',
+            // });
+            // const output = chatCompletion.choices[0].message.content;
+            // console.log(output)
+
+            const output = `**Recipe Name**: North-African Inspired Beef and Veggie Traybake
+
+            **Ingredients**:
+            
+            - 500g Raw beef chunks
+            - 1 Red bell pepper
+            - 1 Yellow bell pepper
+            - 200g Brussel sprouts
+            - 1 Sweet potato
+            - 100g Kale
+            - 2 tbsp Olive oil
+            - 1 tsp Salt (as per dietary requirement, adjust if needed)
+            - 1 tsp Ground cumin
+            - 1 tsp Paprika
+            - 1/2 tsp Ground cinnamon
+            - 1/2 tsp Ground ginger
+            - 1 handful Parsley (for garnish)
+            
+            **Instructions**:
+            
+            1. Preheat your oven to 180°C (350°F).
+            2. Wash all the vegetables. Cut the red and yellow bell peppers into strips, halve the Brussel sprouts, dice the sweet potato into small cubes, and roughly chop the kale.
+            3. In a large mixing bowl, combine the beef chunks, all the prepared vegetables except the kale, 2 tablespoons of olive oil, salt, ground cumin, paprika, cinnamon, and ginger. Toss everything together until the meat and vegetables are well-coated with the oil and spices.
+            4. Spread the mixture evenly across a large baking tray. Ensure the ingredients are not overcrowded to allow even cooking.
+            5. Place in the preheated oven and bake for about 40 minutes or until the beef is thoroughly cooked and the vegetables are tender, stirring halfway through the cooking time.
+            6. In the last 10 minutes of cooking, scatter the kale over the traybake, returning it to the oven to allow the kale to crisp up.
+            7. Once cooked, remove from the oven. Check for seasoning and adjust if necessary.
+            8. Garnish with fresh parsley before serving.
+            
+            **Total Calories**: Approximately 1800kcal for the entire dish, estimated breakdown per serving (serves 5):
+            
+            - Carbs: 30g
+            - Proteins: 40g
+            - Fats: 20g
+            
+            **End Recipe**`;
 
             return (output)
 
@@ -181,7 +218,6 @@ export const AiChef = async (userData: any) => {
 export const detectPhotoIngredients = async (fileName: any) => {
 
     try {
-
         const imagePath = path.join(__dirname, `../../uploads/${fileName}`);
 
         const imageBuffer = fs.readFileSync(imagePath);

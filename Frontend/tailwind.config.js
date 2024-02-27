@@ -18,6 +18,12 @@ module.exports = {
       },
       extend: {
         colors: {
+          mistyrose: "#ffdfd2",
+          white: "#fff",
+          lightcoral: "#f97181",
+          indianred: "#b35f55",
+          black: "#000",
+          pink: "#ffc6c4",
           border: "hsl(var(--border))",
           input: "hsl(var(--input))",
           ring: "hsl(var(--ring))",
@@ -52,10 +58,41 @@ module.exports = {
             foreground: "hsl(var(--card-foreground))",
           },
         },
+        spacing: {},
+        fontFamily: {
+          "lilita-one": "'Lilita One'",
+          mali: "Mali",
+        },
         borderRadius: {
           lg: "var(--radius)",
           md: "calc(var(--radius) - 2px)",
           sm: "calc(var(--radius) - 4px)",
+          "3xs": "10px",
+        },
+        fontSize: {
+          "5xl": "24px",
+          lgi: "19px",
+          xs: "12px",
+          "44xl": "63px",
+          "19xl": "38px",
+          "31xl": "50px",
+          mini: "15px",
+          "13xl": "32px",
+          inherit: "inherit",
+        },
+        screens: {
+          lg: {
+            max: "1200px",
+          },
+          mq1050: {
+            raw: "screen and (max-width: 1050px)",
+          },
+          mq750: {
+            raw: "screen and (max-width: 750px)",
+          },
+          mq450: {
+            raw: "screen and (max-width: 450px)",
+          },
         },
         keyframes: {
           "accordion-down": {

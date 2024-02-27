@@ -30,7 +30,7 @@ const SigninPage = () => {
   const handleOnclick = async () => {
     const response = await SignIn(userData);
     if (response?.success) {
-      router.push("/crm");
+      router.push("/");
     }
   };
 
