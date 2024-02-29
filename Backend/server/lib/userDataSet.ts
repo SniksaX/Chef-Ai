@@ -30,6 +30,7 @@ const extractSection = (text: any, startMarker: any, endMarker: any) => {
 export default function userDataSet(sanity: SanityClient): Router {
 
     router.post('/userPrefInfo', async (req: Request, res: Response) => {
+      const userId: string | null = userInformation._id
         try{
             userRecipeData = {
                 Allergies: req.body.AllergiesData,
@@ -77,7 +78,7 @@ export default function userDataSet(sanity: SanityClient): Router {
                 tools: userRecipeData.Tools,
                 level: userRecipeData.Level,
                 mealType: userRecipeData.MealType,
-                userData: { _ref: userInformation._id , _type: 'reference' },
+                userData: { _ref: userId , _type: 'reference' },
               }
 
             sanity.create(userRecipeDataSanity).then(()=> {
@@ -87,7 +88,7 @@ export default function userDataSet(sanity: SanityClient): Router {
                     ingredients,
                     instructions,
                     macros: totalCalories,
-                    userData: { _ref: userInformation._id , _type: 'reference' },
+                    userData: { _ref: userId , _type: 'reference' },
                 }
                 sanity.create(history)
             });
