@@ -8,8 +8,14 @@ export type userDataForm = {
     LevelData: string | null;
     NumberOfPlatesData: number[] | null;
     MealTypeData: string | null;
-    // EnergyData: string | null;
 };
+
+export type aiResponseForm = {
+  recipeName: string | null;
+  ingredients: string[] | null;
+  instructions: string [] | null;
+  totalCalories: string[] | null;
+}
 
 export type userDataRegisterType = {
   firstName: string | null;

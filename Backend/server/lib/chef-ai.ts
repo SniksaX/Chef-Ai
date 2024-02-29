@@ -14,41 +14,6 @@ const OPENAI_API_KEY: string = process.env.OPENAI_API_KEY || '';
 const openai = new OpenAi({apiKey: OPENAI_API_KEY});
 const router: Router = express.Router();
 
-function extractIngredients(output: any) {
-    const ingredientsMatch = output.match(/Ingredients:\n([\s\S]*?)\n\n/);
-    if (!ingredientsMatch) return [];
-
-    const ingredientsLines = ingredientsMatch[1].split('\n');
-    const ingredients = ingredientsLines.map((line: string) => {
-        const [quantity, name] = line.split(' ', 2);
-        return { name, quantity };
-    });
-
-    return ingredients;
-}
-
-function extractInstructions(output: any) {
-    const instructionsMatch = output.match(/Instructions:\n([\s\S]*?)\n\n/);
-    if (!instructionsMatch) return [];
-
-    const instructions = instructionsMatch[1].split('\n');
-    return instructions;
-}
-
-function extractNutrition(output: any) {
-    const nutritionMatch = output.match(/Total Calories: (\S+)\nCarbs: (\S+) g\nProteins: (\S+) g\nFats: (\S+) g/);
-    if (!nutritionMatch) return {};
-
-    const nutrition = {
-        totalCalories: nutritionMatch[1],
-        carbs: nutritionMatch[2],
-        proteins: nutritionMatch[3],
-        fats: nutritionMatch[4]
-    };
-
-    return nutrition;
-}
-
 export default function AiStuff(): Router {
     router.post('/photoGerenration', async (req: Request, res: Response)  => {
         const responseText = `Given your preferences, a suitable recipe for you could be a simple French-inspired "Ratatouille with Red Meat Cubes." This dish aligns well with your gluten-free requirement, the available kitchen tools, ingredients, and your beginner cooking skill level. It's a classic dish that can elegantly serve three for dinner. 
@@ -162,51 +127,52 @@ export const AiChef = async (userData: any) => {
                 End recipe should be the last thing in the list just after Total Calories.
             `
 
-            // const chatCompletion = await openai.chat.completions.create({
-            //     messages: [
-            //     {role: "system", content: prompt},
-            // ],
-            //     model: 'gpt-4-0125-preview',
-            // });
-            // const output = chatCompletion.choices[0].message.content;
-            // console.log(output)
+            const chatCompletion = await openai.chat.completions.create({
+                messages: [
+                {role: "system", content: prompt},
+            ],
+                model: 'gpt-4-0125-preview',
+            });
+            const output = chatCompletion.choices[0].message.content;
+            console.log(output)
 
-            const output = `**Recipe Name**: North-African Inspired Beef and Veggie Traybake
+            // const output = `
+            // **Recipe Name**: North-African Inspired Beef and Veggie Traybake
 
-            **Ingredients**:
+            // **Ingredients**:
             
-            - 500g Raw beef chunks
-            - 1 Red bell pepper
-            - 1 Yellow bell pepper
-            - 200g Brussel sprouts
-            - 1 Sweet potato
-            - 100g Kale
-            - 2 tbsp Olive oil
-            - 1 tsp Salt (as per dietary requirement, adjust if needed)
-            - 1 tsp Ground cumin
-            - 1 tsp Paprika
-            - 1/2 tsp Ground cinnamon
-            - 1/2 tsp Ground ginger
-            - 1 handful Parsley (for garnish)
+            // - 500g Raw beef chunks
+            // - 1 Red bell pepper
+            // - 1 Yellow bell pepper
+            // - 200g Brussel sprouts
+            // - 1 Sweet potato
+            // - 100g Kale
+            // - 2 tbsp Olive oil
+            // - 1 tsp Salt (as per dietary requirement, adjust if needed)
+            // - 1 tsp Ground cumin
+            // - 1 tsp Paprika
+            // - 1/2 tsp Ground cinnamon
+            // - 1/2 tsp Ground ginger
+            // - 1 handful Parsley (for garnish)
             
-            **Instructions**:
+            // **Instructions**:
             
-            1. Preheat your oven to 180°C (350°F).
-            2. Wash all the vegetables. Cut the red and yellow bell peppers into strips, halve the Brussel sprouts, dice the sweet potato into small cubes, and roughly chop the kale.
-            3. In a large mixing bowl, combine the beef chunks, all the prepared vegetables except the kale, 2 tablespoons of olive oil, salt, ground cumin, paprika, cinnamon, and ginger. Toss everything together until the meat and vegetables are well-coated with the oil and spices.
-            4. Spread the mixture evenly across a large baking tray. Ensure the ingredients are not overcrowded to allow even cooking.
-            5. Place in the preheated oven and bake for about 40 minutes or until the beef is thoroughly cooked and the vegetables are tender, stirring halfway through the cooking time.
-            6. In the last 10 minutes of cooking, scatter the kale over the traybake, returning it to the oven to allow the kale to crisp up.
-            7. Once cooked, remove from the oven. Check for seasoning and adjust if necessary.
-            8. Garnish with fresh parsley before serving.
+            // 1. Preheat your oven to 180°C (350°F).
+            // 2. Wash all the vegetables. Cut the red and yellow bell peppers into strips, halve the Brussel sprouts, dice the sweet potato into small cubes, and roughly chop the kale.
+            // 3. In a large mixing bowl, combine the beef chunks, all the prepared vegetables except the kale, 2 tablespoons of olive oil, salt, ground cumin, paprika, cinnamon, and ginger. Toss everything together until the meat and vegetables are well-coated with the oil and spices.
+            // 4. Spread the mixture evenly across a large baking tray. Ensure the ingredients are not overcrowded to allow even cooking.
+            // 5. Place in the preheated oven and bake for about 40 minutes or until the beef is thoroughly cooked and the vegetables are tender, stirring halfway through the cooking time.
+            // 6. In the last 10 minutes of cooking, scatter the kale over the traybake, returning it to the oven to allow the kale to crisp up.
+            // 7. Once cooked, remove from the oven. Check for seasoning and adjust if necessary.
+            // 8. Garnish with fresh parsley before serving.
             
-            **Total Calories**: Approximately 1800kcal for the entire dish, estimated breakdown per serving (serves 5):
+            // **Total Calories**: Approximately 1800kcal for the entire dish, estimated breakdown per serving (serves 5):
             
-            - Carbs: 30g
-            - Proteins: 40g
-            - Fats: 20g
+            // - Carbs: 30g
+            // - Proteins: 40g
+            // - Fats: 20g
             
-            **End Recipe**`;
+            // **End Recipe**`;
 
             return (output)
 
@@ -219,7 +185,6 @@ export const detectPhotoIngredients = async (fileName: any) => {
 
     try {
         const imagePath = path.join(__dirname, `../../uploads/${fileName}`);
-
         const imageBuffer = fs.readFileSync(imagePath);
         const base64Image = imageBuffer.toString('base64');
 
@@ -231,6 +196,8 @@ export const detectPhotoIngredients = async (fileName: any) => {
                     content: `
                     You are an expert at analyzing images with computer vision. In case of error, make a full report of the cause of: any issues in receiving or understanding images.
                     Please provide list of all the food ingredients you see in this picture. List the items in the following format:
+                    (please note that the answer will be transformed into a json answer, if the format changes all the json file sent will display differently
+                    so i cannot stress enaugh how important it is that your answer should look like the bellow example)
 
                     1. Ingredient1
                     2. Ingredient2

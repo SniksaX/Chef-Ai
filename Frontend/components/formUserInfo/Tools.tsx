@@ -1,151 +1,76 @@
 "use client";
 
-import { useState } from "react";
-import { Checkbox } from "@/components/ui/checkbox";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { userDataForm } from "@/utils/MyTypes";
+import { Input } from "../ui/input";
 
 interface ToolsFormProps {
-  onNext: () => void;
-  onPrev: () => void;
   setAllData: React.Dispatch<React.SetStateAction<userDataForm>>;
 }
 
-export default function ToolsForm({
-  onNext,
-  setAllData,
-  onPrev,
-}: ToolsFormProps) {
-  const [isOthersChecked, setIsOthersChecked] = useState(false);
-  const [checkedTools, setCheckedTools] = useState({});
-  const [othersText, setOthersText] = useState("");
+export default function ToolsForm({ setAllData }: ToolsFormProps) {
+  const [selectedTools, setSelectedTools] = useState<string[]>([]);
+  const [otherAllergy, setOtherAllergy] = useState("");
+  const [customTools, setCustomTools] = useState<string[]>([]);
 
-  const handleOthersCheckboxChange = (checked: boolean) => {
-    setIsOthersChecked(checked);
+  const handleAllergySelect = (allergy: string) => {
+    setSelectedTools((prevSelectedTools) => {
+      return prevSelectedTools.includes(allergy)
+        ? prevSelectedTools.filter((a) => a !== allergy)
+        : [...prevSelectedTools, allergy];
+    });
   };
 
-  const onNextAndSaveData = () => {
-    // Compile checked tools into a string
-    const toolsArray = Object.entries(checkedTools)
-      .filter(([_, checked]) => checked)
-      .map(([key, _]) => key);
-    if (othersText.trim()) toolsArray.push(othersText.trim());
-    const toolsString = toolsArray.join(", ");
+  const handleOtherAllergyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setOtherAllergy(e.target.value);
+  };
 
-    // Update allData
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && otherAllergy.trim() !== "") {
+      e.preventDefault();
+      setCustomTools((prev) => [...prev, otherAllergy]);
+      handleAllergySelect(otherAllergy);
+      setOtherAllergy("");
+    }
+  };
+
+  useEffect(() => {
     setAllData((prevData) => ({
       ...prevData,
-      ToolsData: toolsString,
+      ToolsData: selectedTools,
     }));
-
-    onNext(); // Proceed to the next step
-  };
-
-  const handleCheckboxChange = (id, checked) => {
-    setCheckedTools((prev) => ({
-      ...prev,
-      [id]: checked,
-    }));
-  };
+  }, [selectedTools, setAllData]);
 
   return (
-    <div key="1" className="max-w-xs mx-auto my-8">
-      <h2 className="text-lg font-semibold mb-4">
-        What tools you have at your disposal ?
-      </h2>
-      <p className="text-sm mb-6">
-        {" "}
-        If none is selected the recipe will be random.
-      </p>
-      <form>
-        <div className="flex flex-col space-y-3 mb-8">
-          <label className="flex items-center space-x-2">
-            <Checkbox
-              id="stove"
-              checked={checkedTools["stove"]}
-              onCheckedChange={(checked) =>
-                handleCheckboxChange("stove", checked)
-              }
-            />
-            <span>Stove</span>
-          </label>
-          <label className="flex items-center space-x-2">
-            <Checkbox
-              id="oven"
-              checked={checkedTools["oven"]}
-              onCheckedChange={(checked) =>
-                handleCheckboxChange("oven", checked)
-              }
-            />
-            <span>Oven</span>
-          </label>
-          <label className="flex items-center space-x-2">
-            <Checkbox
-              id="microwave"
-              checked={checkedTools["microwave"]}
-              onCheckedChange={(checked) =>
-                handleCheckboxChange("microwave", checked)
-              }
-            />
-            <span>microwave</span>
-          </label>
-          <label className="flex items-center space-x-2">
-            <Checkbox
-              id="airfryer"
-              checked={checkedTools["airfryer"]}
-              onCheckedChange={(checked) =>
-                handleCheckboxChange("airfryer", checked)
-              }
-            />
-            <span>Airfryer</span>
-          </label>
-          <label className="flex items-center space-x-2">
-            <Checkbox
-              id="blender"
-              checked={checkedTools["blender"]}
-              onCheckedChange={(checked) =>
-                handleCheckboxChange("blender", checked)
-              }
-            />
-            <span>Blender</span>
-          </label>
-          <label className="flex items-center space-x-2">
-            <Checkbox
-              id="bbq"
-              checked={checkedTools["bbq"]}
-              onCheckedChange={(checked) =>
-                handleCheckboxChange("bbq", checked)
-              }
-            />
-            <span>BBQ</span>
-          </label>
-          <label className="flex items-center space-x-2">
-            <Checkbox
-              id="others"
-              checked={isOthersChecked}
-              onCheckedChange={handleOthersCheckboxChange}
-            />
-            <span>Others</span>
-          </label>
-          {isOthersChecked && (
-            <input
-              type="text"
-              className="mt-2 p-2 border rounded"
-              placeholder="Please specify your tools"
-              value={othersText}
-              onChange={(e) => setOthersText(e.target.value)}
-            />
-          )}
-        </div>
-        <div className="flex-row">
-          <Button className="w-1/2" onClick={onPrev}>
-            Back
+    <div className="rounded-md bg-green-100 p-4">
+      <h2 className="text-lg font-semibold">3. Tools Available</h2>
+      <div className="mb-4">
+        {[
+          "Stove",
+          "Oven",
+          "Microwave",
+          "Airfryer",
+          "Blender",
+          "BBQ",
+          ...customTools,
+        ].map((allergy) => (
+          <Button
+            key={allergy}
+            variant="ghost"
+            className={selectedTools.includes(allergy) ? "selected" : ""}
+            onClick={() => handleAllergySelect(allergy)}
+          >
+            {allergy}
           </Button>
-          <Button className="w-1/2" onClick={onNextAndSaveData}>
-            Next
-          </Button>
-        </div>
-      </form>
+        ))}
+      </div>
+      <Input
+        placeholder="Other Tools"
+        value={otherAllergy}
+        onChange={handleOtherAllergyChange}
+        onKeyPress={handleKeyPress}
+      />
     </div>
   );
 }

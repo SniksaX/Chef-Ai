@@ -6,29 +6,23 @@ import * as SliderPrimitive from "@radix-ui/react-slider";
 import { userDataForm } from "@/utils/MyTypes";
 
 interface TimeTypeFormProps {
-  onNext: () => void;
-  onPrev: () => void;
   setAllData: React.Dispatch<React.SetStateAction<userDataForm>>;
 }
 
-export default function TimeForm({
-  onNext,
-  setAllData,
-  onPrev,
-}: TimeTypeFormProps) {
+export default function TimeForm({ setAllData }: TimeTypeFormProps) {
   const [value, setValue] = useState([20]);
-  const onNextAndSaveData = () => {
+
+  const handleValueChange = (value: number[]) => {
+    setValue(value);
     setAllData((prevData) => ({
       ...prevData,
       TimeData: value,
     }));
-
-    onNext();
   };
 
   return (
     <div style={{ padding: 20, textAlign: "center" }}>
-      <h2>How much time you got?</h2>
+      <h2 className="text-lg font-semibold">How much time you got?</h2>
       <p>If set to 0 it'll be random.</p>
 
       <p id="Time">{value} minutes</p>
@@ -37,7 +31,7 @@ export default function TimeForm({
         min={0}
         max={180}
         step={20}
-        onValueChange={setValue}
+        onValueChange={handleValueChange}
         className="slider"
         orientation="horizontal"
         style={{
@@ -64,7 +58,7 @@ export default function TimeForm({
             className="range"
             style={{
               position: "absolute",
-              backgroundColor: "dodgerblue",
+              backgroundColor: "green",
               borderRadius: "9999px",
               height: "100%",
             }}
@@ -82,14 +76,6 @@ export default function TimeForm({
           }}
         />
       </SliderPrimitive.Root>
-      <div className="flex-row">
-        <Button className="w-1/2" onClick={onPrev}>
-          Back
-        </Button>
-        <Button className="w-1/2" onClick={onNextAndSaveData}>
-          Next
-        </Button>
-      </div>
     </div>
   );
 }

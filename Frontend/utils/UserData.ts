@@ -9,7 +9,6 @@ export async function SetUserData(userData: userDataForm) {
             headers: {"Content-Type": "application/json"},
         })
         
-        console.log(response.json)
         if (response.ok) {
             const data = await response.json();
             return { success: true, data };
@@ -21,6 +20,32 @@ export async function SetUserData(userData: userDataForm) {
         console.log(error);
     }
 }
+
+// export function pushImage(imageData: File, onProgress: any) {
+//   return new Promise((resolve, reject) => {
+//     const xhr = new XMLHttpRequest();
+//     xhr.open("POST", "http://localhost:4444/api/pushImage", true);
+//     xhr.withCredentials = true; // If you need credentials
+
+//     xhr.upload.onprogress = (event) => {
+//       if (event.lengthComputable) {
+//         const progress = (event.loaded / event.total) * 100;
+//         onProgress(progress); // Callback function to update progress
+//       }
+//     };
+
+//     xhr.onload = () => {
+//       if (xhr.status === 200) {
+//         resolve(JSON.parse(xhr.responseText));
+//       } else {
+//         reject(new Error("Upload failed: " + xhr.statusText));
+//       }
+//     };
+
+//     xhr.onerror = () => reject(new Error("XMLHttpRequest error: " + xhr.statusText));
+//     xhr.send(imageData); // Send the form data
+//   });
+// }
 
 export async function pushImage(image: FormData) {
   try {

@@ -1,146 +1,76 @@
 "use client";
 
-import { useState } from "react";
-import { Checkbox } from "@/components/ui/checkbox";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { userDataForm } from "@/utils/MyTypes";
+import { Input } from "../ui/input";
 
 interface RegimeFormProps {
-  onNext: () => void;
-  onPrev: () => void;
   setAllData: React.Dispatch<React.SetStateAction<userDataForm>>;
 }
 
-export default function RegimeForm({
-  onNext,
-  setAllData,
-  onPrev,
-}: RegimeFormProps) {
-  const [isOthersChecked, setIsOthersChecked] = useState(false);
-  const [checkedRegime, setCheckedRegime] = useState({});
-  const [othersText, setOthersText] = useState("");
+export default function RegimeForm({ setAllData }: RegimeFormProps) {
+  const [selectedRegime, setSelectedRegime] = useState<string[]>([]);
+  const [otherAllergy, setOtherAllergy] = useState("");
+  const [customRegime, setCustomRegime] = useState<string[]>([]);
 
-  const handleOthersCheckboxChange = (checked: boolean) => {
-    setIsOthersChecked(checked);
+  const handleAllergySelect = (regime: string) => {
+    setSelectedRegime((prevSelectedRegime) => {
+      return prevSelectedRegime.includes(regime)
+        ? prevSelectedRegime.filter((a) => a !== regime)
+        : [...prevSelectedRegime, regime];
+    });
   };
 
-  const onNextAndSaveData = () => {
-    const regimeArray = Object.entries(checkedRegime)
-      .filter(([_, checked]) => checked)
-      .map(([key, _]) => key);
-    if (othersText.trim()) regimeArray.push(othersText.trim());
-    const regimeString = regimeArray.join(", ");
+  const handleOtherAllergyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setOtherAllergy(e.target.value);
+  };
 
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && otherAllergy.trim() !== "") {
+      e.preventDefault();
+      setCustomRegime((prev) => [...prev, otherAllergy]);
+      handleAllergySelect(otherAllergy);
+      setOtherAllergy("");
+    }
+  };
+
+  useEffect(() => {
     setAllData((prevData) => ({
       ...prevData,
-      RegimeData: regimeString,
+      RegimeData: selectedRegime,
     }));
-
-    onNext();
-  };
-
-  const handleCheckboxChange = (id, checked) => {
-    setCheckedRegime((prev) => ({
-      ...prev,
-      [id]: checked,
-    }));
-  };
+  }, [selectedRegime, setAllData]);
 
   return (
-    <div key="1" className="max-w-xs mx-auto my-8">
-      <h2 className="text-lg font-semibold mb-4">
-        What regimes are you following ?
-      </h2>
-      <p className="text-sm mb-6">If none click Next.</p>
-      <form>
-        <div className="flex flex-col space-y-3 mb-8">
-          <label className="flex items-center space-x-2">
-            <Checkbox
-              id="gluten-free"
-              checked={checkedRegime["gluten-free"]}
-              onCheckedChange={(checked) =>
-                handleCheckboxChange("gluten-free", checked)
-              }
-            />
-            <span>Gluten-Free</span>
-          </label>
-          <label className="flex items-center space-x-2">
-            <Checkbox
-              id="salt"
-              checked={checkedRegime["salt"]}
-              onCheckedChange={(checked) =>
-                handleCheckboxChange("salt", checked)
-              }
-            />
-            <span>Low-Sodium or Salt-Free</span>
-          </label>
-          <label className="flex items-center space-x-2">
-            <Checkbox
-              id="flexitarian"
-              checked={checkedRegime["flexitarian"]}
-              onCheckedChange={(checked) =>
-                handleCheckboxChange("flexitarian", checked)
-              }
-            />
-            <span>Flexitarian</span>
-          </label>
-          <label className="flex items-center space-x-2">
-            <Checkbox
-              id="vegan"
-              checked={checkedRegime["vegan"]}
-              onCheckedChange={(checked) =>
-                handleCheckboxChange("vegan", checked)
-              }
-            />
-            <span>Vegan</span>
-          </label>
-          <label className="flex items-center space-x-2">
-            <Checkbox
-              id="vegetarian"
-              checked={checkedRegime["vegetarian"]}
-              onCheckedChange={(checked) =>
-                handleCheckboxChange("vegetarian", checked)
-              }
-            />
-            <span>Vegetarian</span>
-          </label>
-          <label className="flex items-center space-x-2">
-            <Checkbox
-              id="paleo"
-              checked={checkedRegime["paleo"]}
-              onCheckedChange={(checked) =>
-                handleCheckboxChange("paleo", checked)
-              }
-            />
-            <span>Paleo</span>
-          </label>
-          <label className="flex items-center space-x-2">
-            <Checkbox
-              id="others"
-              checked={isOthersChecked}
-              onCheckedChange={handleOthersCheckboxChange}
-            />
-            <span>Others</span>
-          </label>
-          {isOthersChecked && (
-            <input
-              type="text"
-              className="mt-2 p-2 border rounded"
-              placeholder="Please specify your regime"
-              value={othersText}
-              onChange={(e) => setOthersText(e.target.value)}
-            />
-          )}
-        </div>
-        <div className="flex-row">
-          <Button className="w-1/2" onClick={onPrev}>
-            Back
+    <div className="rounded-md bg-green-100 p-4">
+      <h2 className="text-lg font-semibold">8. Any Regime?</h2>
+      <div className="mb-4">
+        {[
+          "Gluten-free",
+          "Salt-free",
+          "Flexitarian",
+          "Vegan",
+          "Vegetarian",
+          "Paleo",
+          ...customRegime,
+        ].map((regime) => (
+          <Button
+            key={regime}
+            variant="ghost"
+            className={selectedRegime.includes(regime) ? "selected" : ""}
+            onClick={() => handleAllergySelect(regime)}
+          >
+            {regime}
           </Button>
-          <Button className="w-1/2" onClick={onNextAndSaveData}>
-            Next
-          </Button>
-        </div>
-      </form>
+        ))}
+      </div>
+      <Input
+        placeholder="Other Regime"
+        value={otherAllergy}
+        onChange={handleOtherAllergyChange}
+        onKeyPress={handleKeyPress}
+      />
     </div>
   );
 }

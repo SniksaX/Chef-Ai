@@ -1,6 +1,7 @@
 import express, { Router, Request, Response } from 'express';
 import multer from 'multer';
 import path from 'path';
+import fs from 'fs/promises';
 import { detectPhotoIngredients } from './chef-ai';
 
 const router: Router = express.Router();
@@ -34,20 +35,33 @@ const upload = multer({ storage, fileFilter });
 
 export default function(): Router {    
 
-    router.post('/pushImage', upload.array('file', 3), async (req: Request, res: Response) => {
+    router.post('/pushImage', upload.array('file', 1), async (req: Request, res: Response) => {
         try {
             const files = req.files as Express.Multer.File[];
     
             if (!files || files.length === 0) {
                 return res.status(400).send("No files uploaded.");
             }
+
             const detectionResult = await detectPhotoIngredients(files[0].filename);
             // const detectionResult = {
-            //             content: "test"
-            // } 
-            // setTimeout(() => res.status(200).json({ message: 'Files uploaded successfully.', detectionResult }), 4000);
-            return res.status(200).json({ message: 'Files uploaded successfully.', detectionResult })
-            
+            //             content: `1. Carrots2. Zucchini 3. Eggs 4. Beef 5. Almonds 6. Walnuts`
+            // }
+
+            files.forEach((file, index) => {
+                console.log(`File #${index + 1}:`, file);
+            });
+
+            res.status(200).json({ message: 'Files uploaded successfully.', detectionResult: detectionResult.content})
+
+            // setTimeout(() => {
+            //     res.status(200).json({ message: 'Files uploaded successfully.', detectionResult: detectionResult.content})
+            // }, 10000)
+
+            for (const file of files) {
+                await fs.unlink(file.path).catch(console.error);
+            }
+
         } catch (error) {
             console.error(error);
             res.status(500).send("An error occurred during the file upload.");
@@ -56,3 +70,4 @@ export default function(): Router {
 
     return router;
 }
+

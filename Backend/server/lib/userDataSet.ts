@@ -3,7 +3,6 @@ import express, { Router, Request, Response } from 'express';
 import { SanityClient } from '@sanity/client';
 import { AiChef } from './chef-ai';
 import { userInformation } from '../server';
-import cookbook from '../../schemas/cookbook';
 
 const router: Router = express.Router();
 
@@ -43,6 +42,7 @@ export default function userDataSet(sanity: SanityClient): Router {
                 NumberOfPlates: req.body.NumberOfPlatesData,
                 MealType: req.body.MealTypeData,
             }
+            console.log(userRecipeData)
 
             const recipe = await AiChef(userRecipeData)
 
@@ -69,7 +69,7 @@ export default function userDataSet(sanity: SanityClient): Router {
 
             res.status(200).json({message: 'recipe Generated successfuly', totalCalories, instructions, recipeName, ingredients})
 
-              const userRecipeDataSanity = {
+            const userRecipeDataSanity = {
                 _type: "userAiInfo",
                 allergies: userRecipeData.Allergies,
                 cuisineType: userRecipeData.CuisineType,
@@ -78,9 +78,9 @@ export default function userDataSet(sanity: SanityClient): Router {
                 level: userRecipeData.Level,
                 mealType: userRecipeData.MealType,
                 userData: { _ref: userInformation._id , _type: 'reference' },
-            }
+              }
 
-            sanity.create(userRecipeDataSanity).then(createdUserRecipeDataSanity => {
+            sanity.create(userRecipeDataSanity).then(()=> {
                 const history = {
                     _type: "cookbook",
                     recipeName,
