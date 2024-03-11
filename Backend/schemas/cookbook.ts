@@ -4,10 +4,10 @@ export default {
     type: 'document',
     fields: [
         {
-            name: 'userData',
-            title: 'userData',
+            name: 'userAiInfo',
+            title: 'User AI Info',
             type: 'reference',
-            to: [{ type: 'userData' }],
+            to: [{ type: 'userAiInfo' }],
         },
         {
             name: 'recipeName',
@@ -37,6 +37,11 @@ export default {
             ],
         },
         {
+            name: 'stars',
+            title: 'Stars',
+            type: 'number',
+        },
+        {
             name: 'macros',
             title:'Macros',
             type: 'array',
@@ -47,5 +52,33 @@ export default {
                 }
             ],
         },
+        {
+            name: 'recipeImage',
+            title: 'Recipe Image',
+            type: 'image',
+            options: {
+                hotspot: true,
+            },
+            fields: [
+                {
+                    name: 'caption',
+                    type: 'string',
+                    title: 'Caption',
+                    options: {
+                        isHighlighted: true
+                    }
+                },
+                {
+                    name: 'alt',
+                    type: 'string',
+                    title: 'Alternative text',
+                    description: 'Important for SEO and accessibility.',
+                    options: {
+                        isHighlighted: true
+                    }
+                }
+            ]
+        },
     ],
 };
+

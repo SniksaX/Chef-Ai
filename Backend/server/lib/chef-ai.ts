@@ -14,83 +14,52 @@ const OPENAI_API_KEY: string = process.env.OPENAI_API_KEY || '';
 const openai = new OpenAi({apiKey: OPENAI_API_KEY});
 const router: Router = express.Router();
 
-export default function AiStuff(): Router {
-    router.post('/photoGerenration', async (req: Request, res: Response)  => {
-        const responseText = `Given your preferences, a suitable recipe for you could be a simple French-inspired "Ratatouille with Red Meat Cubes." This dish aligns well with your gluten-free requirement, the available kitchen tools, ingredients, and your beginner cooking skill level. It's a classic dish that can elegantly serve three for dinner. 
-
-            ### Ingredients:
-            - 200g red meat cubes
-            - 1 large zucchini, sliced
-            - 2 medium carrots, sliced 
-            - 3 eggs
-            - 2 tbsp olive oil
-            - 1/2 tsp salt
-            - 1/2 tsp black pepper
-            - 1/2 tsp rosemary, dried
-            - 1/2 tsp thyme, dried
-
-            ### Instructions:
-            1. Preheat your oven to 375°F (190°C).
-            2. In a large bowl, toss the sliced zucchini and carrots with 1 tablespoon of olive oil, salt, and pepper until they are evenly coated.
-            3. Spread the vegetables evenly on a baking tray and roast in the preheated oven for about 25 to 30 minutes, or until they are tender and slightly caramelized. Stir them halfway through the cooking time for even roasting.
-            4. While the vegetables are roasting, heat the remaining tablespoon of olive oil in a skillet over medium-high heat.
-            5. Add the red meat cubes to the skillet, season with salt, pepper, rosemary, and thyme. Cook the meat, stirring occasionally until it is browned and cooked to your preference, approximately 6 to 8 minutes.
-            6. In the last 10 minutes of the vegetable roasting time, crack the eggs on top of the vegetables in the oven tray to bake them until the whites are set but the yolks are still runny, or longer if you prefer your eggs well done.
-            7. Once the vegetables and eggs are done, remove them from the oven, and arrange the roasted vegetables and meat cubes on plates.
-            8. Carefully place an egg on top of each serving.
-            9. Optional: Garnish with a sprinkle of rosemary and thyme before serving.
-
-            ### Total Calories:
-            - Red meat cubes (200g): ~500 kcal
-            - 1 large zucchini: ~55 kcal
-            - 2 medium carrots: ~50 kcal
-            - 3 eggs: ~210 kcal
-            - 2 tbsp olive oil: ~240 kcal
-            - Total Calories: ~1055 kcal for the whole recipe, or approximately 352 kcal per serving.
-
-            ### Macronutrients (per serving approximations):
-            - Carbs: 10g
-            - Proteins: 28g
-            - Fats: 24g
-
-            This dish not only adheres to your gluten-free dietary regime but also incorporates a touch of French cuisine, making for a flavorful and healthful dinner option for three. Enjoy your culinary adventure!`;
-
-            const extractSection = (text: any, startMarker: any, endMarker: any) => {
-                const startIndex = text.indexOf(startMarker) + startMarker.length;
-                const endIndex = text.indexOf(endMarker, startIndex);
-                return text.substring(startIndex, endIndex).trim();
-            };
-
-            const ingredients = extractSection(responseText, "### Ingredients:", "### Instructions:");
-            const instructions = extractSection(responseText, "### Instructions:", "### Total Calories:");
-            const totalCalories = extractSection(responseText, "### Total Calories:", "### Macronutrients");
-
-            console.log("Ingredients:\n", ingredients);
-            console.log("Instructions:\n", instructions);
-            console.log("Total Calories:\n", totalCalories);
-    })
 
 
+export const Dale = (recipeName: string): Promise<{ imageUrl?: string, error?: string }> => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (!recipeName) {
+                return reject({ error: 'Prompt is required' });
+            }
 
-    return router;
-}
+            const response = await openai.images.generate({
+                model: "dall-e-3",
+                prompt: recipeName,
+                n: 1,
+                size: "1024x1024",
+            });
 
+            if (response.data && response.data.length > 0) {
+                const imageUrl = response.data[0].url;
+                resolve({ imageUrl });
+            } else {
+                reject({ error: 'No image generated' });
+            }
+        } catch (error) {
+            // Handle any errors
+            console.error('Error generating image:', error);
+            reject({ error: 'Error generating image' });
+        }
+    });
+};
 
 export const AiChef = async (userData: any) => {
 
         try {
             const prompt = `The user provides the following information:
-            - Kitchen tools: ${userData?.Tools}
-            - Available ingredients: ${userData?.Ingredients}
-            - Time available for cooking: ${userData?.Time} minutes
+            - Kitchen tools: ${userData?.Tools}, (if empty, ignore)
+            - Available ingredients: ${userData?.Ingredients} , (if empty, ignore)
+            - Time available for cooking: ${userData?.Time} minutes , (if empty, ignore)
             
             Additional user details: 
             - Allergies: ${userData?.Allergies} (if empty, ignore)
             - Preferred cuisine type: ${userData?.CuisineType} (if empty, ignore)
             - Dietary regime: ${userData?.Regime} (if empty, ignore)
-            - Cooking skill level: ${userData?.Level}
-            - Number of servings needed: ${userData?.NumberOfPlates}
-            - The meal Type the user wants to eat: ${userData?.MealType}
+            - Cooking skill level: ${userData?.Level}, (if empty, ignore)
+            - Number of servings needed: ${userData?.NumberOfPlates}, (if empty, ignore)
+            - The meal Type the user wants to eat: ${userData?.MealType}, (if empty, ignore)
+            - Note you already generated this recipes for the user, do not generate the same as those : ${userData?.recipeNameUsed} (if empty, ignore)
             
             Based on this information, suggest a suitable recipe. Your response should look like below
             (please note that the answer will be transformed into a json answer, if the format changes all the json file sent will display differently

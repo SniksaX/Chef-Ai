@@ -36,7 +36,7 @@ export default function ToolsForm({ setAllData }: ToolsFormProps) {
   };
 
   useEffect(() => {
-    setAllData((prevData) => ({
+    setAllData((prevData: any) => ({
       ...prevData,
       ToolsData: selectedTools,
     }));

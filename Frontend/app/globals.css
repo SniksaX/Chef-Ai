@@ -72,7 +72,7 @@ button.selected {
   background-color: #4CAF50; /* Green background for selected button */
   color: white;
 }
- 
+
 @layer base {
   * {
     @apply border-border;

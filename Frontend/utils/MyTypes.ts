@@ -15,6 +15,7 @@ export type aiResponseForm = {
   ingredients: string[] | null;
   instructions: string [] | null;
   totalCalories: string[] | null;
+  image: string | null;
 }
 
 export type userDataRegisterType = {
@@ -23,10 +24,20 @@ export type userDataRegisterType = {
   password: string | null;
   email: string | null;
   phone: string | null;
-  age: number | null;
+  age: string | null;
 }
 
 export type userDataLoginType = {
   email: string | null;
   password: string | null;
 }
+
+export type HistoryDataType = {
+  recipeName: string | null;
+  ingredients: string[] | null;
+  instructions: string[] | null;
+  macros: string[] | null;
+  createdAt: string | null;
+  stars: number | null;
+  refId: string | null;
+};

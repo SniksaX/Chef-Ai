@@ -63,7 +63,7 @@ export default function MainPage() {
   );
 }
 
-function AppleIcon(props) {
+function AppleIcon(props: any) {
   return (
     <svg
       {...props}
@@ -83,7 +83,7 @@ function AppleIcon(props) {
   );
 }
 
-function DatabaseIcon(props) {
+function DatabaseIcon(props: any) {
   return (
     <svg
       {...props}
@@ -104,7 +104,7 @@ function DatabaseIcon(props) {
   );
 }
 
-function LockIcon(props) {
+function LockIcon(props: any) {
   return (
     <svg
       {...props}

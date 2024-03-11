@@ -1,4 +1,4 @@
-import ResultPage from "@/components/crm/result";
+import ResultPage from "@/components/onBoarding/result/resultPage";
 
 export default function Component() {
   return <ResultPage />;

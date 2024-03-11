@@ -36,7 +36,7 @@ export default function RegimeForm({ setAllData }: RegimeFormProps) {
   };
 
   useEffect(() => {
-    setAllData((prevData) => ({
+    setAllData((prevData: any) => ({
       ...prevData,
       RegimeData: selectedRegime,
     }));

@@ -1,4 +1,4 @@
-import AddShoping from "@/components/crm/result";
+import AddShoping from "@/components/onBoarding/shoppingList/ShopingList";
 
 export default function Component() {
   return <AddShoping />;

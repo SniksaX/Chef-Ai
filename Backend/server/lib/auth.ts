@@ -52,9 +52,9 @@ export default function Auth(sanity: SanityClient): Router {
                 if (loginErr) {
                     return next(loginErr);
                 }
-                req.session.cookie.maxAge = 24 * 60 * 60 * 3600;
-                // res.cookie('session', {  username: user.lastName }, { httpOnly: true });
-                return res.status(200).json({ message: 'Login successful.' });
+            req.session.cookie.maxAge = 24 * 60 * 60 * 3600;
+            // res.cookie('session', {  username: user.lastName }, { httpOnly: true });
+            return res.status(200).json({ message: 'Login successful.' });
             });
         })(req, res, next);
     });

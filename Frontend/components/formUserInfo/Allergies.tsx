@@ -36,7 +36,7 @@ export default function AllergiesForm({ setAllData }: AllergiesFormProps) {
   };
 
   useEffect(() => {
-    setAllData((prevData) => ({
+    setAllData((prevData: any) => ({
       ...prevData,
       AllergiesData: selectedAllergies,
     }));

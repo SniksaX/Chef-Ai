@@ -12,23 +12,40 @@ export default {
         {
             name: 'allergies',
             title:'Allergies',
-            type:'string',
+            type:'array',
+            of : [{ type: 'string'}]
         },
         {
             name: 'cuisineType',
             title:'cuisine type',
-            type:'string',
+            type:'array',
+            of : [{ type: 'string'}]
         },
         {
             name: 'ingredients',
             title:'Ingredients',
-            type:'string',
+            type:'array',
+            of : [{ type: 'string'}]
         },
         {
             name: 'tools',
             title:'Tools',
-            type:'string',
+            type:'array',
+            of : [{ type: 'string'}]
         },
+        {
+            name: 'time',
+            title:'Time',
+            type:'array',
+            of : [{ type: 'number'}]
+        },
+        {
+            name: 'persons',
+            title:'Persons',
+            type:'array',
+            of : [{ type: 'number'}]
+        },
+        
         {
             name: 'level',
             title:'Level',

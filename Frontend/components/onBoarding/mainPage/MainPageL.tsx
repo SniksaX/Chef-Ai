@@ -19,26 +19,27 @@ import {
   CardFooter,
   Card,
 } from "@/components/ui/card";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { userDataForm } from "@/utils/MyTypes";
-import MealTypeForm from "../formUserInfo/MealType";
-import ToolsForm from "../formUserInfo/Tools";
-import AllergiesForm from "../formUserInfo/Allergies";
-import CuisineTypeForm from "../formUserInfo/CuisineType";
-import EventForm from "../formUserInfo/Eventmeals";
-import LevelForm from "../formUserInfo/Level";
-import NumberOfPlatesForm from "../formUserInfo/NumberOfPlates";
-import RegimeForm from "../formUserInfo/Regime";
-import TimeForm from "../formUserInfo/Time";
-import IngredientsForm from "../formUserInfo/Ingredients";
-import { SetUserData } from "@/utils/UserData";
+import MealTypeForm from "@/components/formUserInfo/MealType";
+import ToolsForm from "@/components/formUserInfo/Tools";
+import AllergiesForm from "@/components/formUserInfo/Allergies";
+import CuisineTypeForm from "@/components/formUserInfo/CuisineType";
+import EventForm from "@/components/formUserInfo/Eventmeals";
+import LevelForm from "@/components/formUserInfo/Level";
+import NumberOfPlatesForm from "@/components/formUserInfo/NumberOfPlates";
+import RegimeForm from "@/components/formUserInfo/Regime";
+import TimeForm from "@/components/formUserInfo/Time";
+import IngredientsForm from "@/components/formUserInfo/Ingredients";
+import { SetUserData, fetchHistory } from "@/utils/UserData";
 import { useRouter } from "next/navigation";
-import LoadingModal from "../LoadingModal";
+import LoadingModal from "@/components/LoadingModal";
 import { LoaderIcon } from "@/utils/animation";
 
 export default function Component() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [historyData, setHistoryData] = useState<any>([]);
 
   const [allData, setAllData] = useState<userDataForm>({
     IngredientsData: null,
@@ -51,6 +52,18 @@ export default function Component() {
     NumberOfPlatesData: null,
     MealTypeData: null,
   });
+
+  useEffect(() => {
+    const getHistory = async () => {
+      const result = await fetchHistory();
+      if (result.success) {
+        setHistoryData(result.data.result);
+      }
+    };
+    getHistory();
+  }, []);
+
+  localStorage.setItem("recipes", JSON.stringify(historyData));
 
   const handleGenerate = async () => {
     setIsLoading(true);
@@ -155,130 +168,5 @@ export default function Component() {
         </div>
       </div>
     </main>
-  );
-}
-
-function AlertCircleIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <circle cx="12" cy="12" r="10" />
-      <line x1="12" x2="12" y1="8" y2="12" />
-      <line x1="12" x2="12.01" y1="16" y2="16" />
-    </svg>
-  );
-}
-
-function AppleIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z" />
-      <path d="M10 2c1 .5 2 2 2 5" />
-    </svg>
-  );
-}
-
-function CalendarIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
-      <line x1="16" x2="16" y1="2" y2="6" />
-      <line x1="8" x2="8" y1="2" y2="6" />
-      <line x1="3" x2="21" y1="10" y2="10" />
-    </svg>
-  );
-}
-
-function MartiniIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M8 22h8" />
-      <path d="M12 11v11" />
-      <path d="m19 3-7 8-7-8Z" />
-    </svg>
-  );
-}
-
-function ParenthesesIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M8 21s-4-3-4-9 4-9 4-9" />
-      <path d="M16 3s4 3 4 9-4 9-4 9" />
-    </svg>
-  );
-}
-
-function RefrigeratorIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M5 6a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6Z" />
-      <path d="M5 10h14" />
-      <path d="M15 7v6" />
-    </svg>
   );
 }

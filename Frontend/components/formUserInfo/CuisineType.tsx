@@ -28,7 +28,7 @@ export default function CuisineTypeForm({ setAllData }: CuisineTypeFormProps) {
   };
 
   useEffect(() => {
-    setAllData((prevData) => ({
+    setAllData((prevData: any) => ({
       ...prevData,
       CuisineTypeData: selectedCuisine ? [selectedCuisine] : [],
     }));

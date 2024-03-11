@@ -3,7 +3,6 @@ import express, { Router } from 'express';
 import { SanityClient } from '@sanity/client';
 import userDataSet from './userDataSet';
 import GetImage from './getImage';
-import AiStuff from './chef-ai';
 import Auth from './auth';
 
 
@@ -26,7 +25,6 @@ export default function createRouter(sanity: SanityClient): Router {
     }
 
     router.use('/', Auth(sanity))
-    router.use('/', AiStuff());
     router.use('/', userDataSet(sanity));
     router.use('/', GetImage());
     

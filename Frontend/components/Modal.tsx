@@ -1,8 +1,8 @@
 import React from "react";
 
-const Modal = ({ isvisible, onClose, children }) => {
+const Modal = ({ isvisible, onClose, children }: any) => {
   if (!isvisible) return null;
-  const handleClose = (e) => {
+  const handleClose = (e: any) => {
     if (e.target.id === "wrapper") onClose();
   };
 

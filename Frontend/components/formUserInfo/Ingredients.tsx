@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "../ui/input";
 import { userDataForm } from "@/utils/MyTypes";
 import { useEffect, useState } from "react";
-import UploadWindow from "../crm/uploadfile";
+import UploadWindow from "../onBoarding/uploadfile";
 import LoadingModal from "../LoadingModal";
 
 interface IngredientsFormProps {
@@ -60,7 +60,7 @@ export default function IngredientsForm({ setAllData }: IngredientsFormProps) {
   };
 
   useEffect(() => {
-    setAllData((prevData) => ({
+    setAllData((prevData: any) => ({
       ...prevData,
       IngredientsData: selectedIngredients,
     }));
@@ -111,10 +111,10 @@ export default function IngredientsForm({ setAllData }: IngredientsFormProps) {
         <UploadWindow
           setShowModal={setShowModal}
           setCustomIngredients={(ingredients) => {
-            setCustomIngredients(ingredients); // Existing logic to add to customIngredients
+            setCustomIngredients(ingredients);
             setSelectedIngredients((prev) => [
               ...new Set([...prev, ...ingredients]),
-            ]); // Additional logic to also select these ingredients
+            ]);
           }}
         />
       </LoadingModal>

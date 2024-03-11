@@ -1,4 +1,4 @@
-"use client ";
+"use client";
 
 import React, { useState } from "react";
 import { Label } from "@/components/ui/label";
@@ -26,7 +26,7 @@ const LoginPage = () => {
   const handleOnclick = async () => {
     const response = await userLogin(userData);
     if (response?.success) {
-      router.push("/crm");
+      router.push("/home");
     }
   };
 

@@ -1,10 +1,7 @@
 import React from "react";
 
-const LoadingModal = ({ isvisible, onClose, children }) => {
+const LoadingModal = ({ isvisible, children }: any) => {
   if (!isvisible) return null;
-  const handleClose = (e) => {
-    if (e.target.id === "wrapper") onClose();
-  };
 
   return (
     <div

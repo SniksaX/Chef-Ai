@@ -91,7 +91,7 @@ export async function fetchHistory(){
 
 export async function pushShopping(shoppingList: string[]){
   try {
-    const response = await fetch("http://localhost:4444/api/pushShoppingList", {
+    const response = await fetch("http://localhost:4444/api/createOrAppendShoppingList", {
     method: "POST",
     credentials: "include", 
     headers: {"Content-Type": "application/json"},
@@ -106,6 +106,49 @@ export async function pushShopping(shoppingList: string[]){
       return { success: false };
     }
   } catch (error) {
+    console.error("Error pushing file:", error);
+    return { success: false, error };
+  }
+}
+
+export async function updateShopping(shoppingList: string[]){
+  try {
+    const response = await fetch("http://localhost:4444/api/updateShoppingList", {
+    method: "POST",
+    credentials: "include", 
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify(shoppingList),
+  });
+
+    if (response.ok) {
+      const data = await response.json();
+      return { success: true, data };
+    } else {
+      console.error("Server responded with a non-OK status:", response.status);
+      return { success: false };
+    }
+  } catch (error) {
+    console.error("Error pushing file:", error);
+    return { success: false, error };
+  }
+}
+
+export async function fetchShopping(){
+  try {
+    const response = await fetch(`http://localhost:4444/api/fetchShoppingList`, {
+      method: "GET",
+      credentials: "include",
+      headers: { 'Content-type': 'application/json' },
+    })
+
+    if (response.ok) {
+      const data = await response.json();
+      return {success: true, data: data}
+    } else {
+      console.error("server responded with a non ok reponse", response.status)
+      return {success: false}
+    }
+  }catch (error) {
     console.error("Error pushing file:", error);
     return { success: false, error };
   }

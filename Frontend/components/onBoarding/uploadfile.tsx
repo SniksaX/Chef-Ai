@@ -23,7 +23,7 @@ export default function UploadWindow({
   const [showProgress, setShowProgress] = useState<boolean>(false);
   const [error, setError] = useState("");
 
-  const handleImageChange = (event) => {
+  const handleImageChange = (event: any) => {
     const files = Array.from(event.target.files);
 
     if (files.length > 3) {
@@ -37,7 +37,7 @@ export default function UploadWindow({
     setImagePreviews([]);
     setSelectedFiles(files);
 
-    files.forEach((file) => {
+    files.forEach((file: any) => {
       if (file.type.substr(0, 5) === "image") {
         const reader = new FileReader();
         reader.onloadend = () => {
@@ -74,10 +74,10 @@ export default function UploadWindow({
 
     const result = await pushImage(formData);
     if (result.success) {
-      const detectedIngredients = result.data.detectionResult
-        .split(/[\d\.]+\s*/)
-        .map((ingredient) => ingredient.trim())
-        .filter((ingredient) => ingredient.length > 0);
+      const detectedIngredients =
+        result.data.detectionResult.split(/[\d\.]+\s*/);
+      // .map((ingredient) => ingredient.trim())
+      // .filter((ingredient) => ingredient.length > 0);
 
       setCustomIngredients(detectedIngredients);
       setShowModal(false);
