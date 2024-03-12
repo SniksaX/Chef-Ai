@@ -1,11 +1,13 @@
 // middleware.ts
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { middlewareCheck } from './utils/UserData';
 
 export async function middleware(request: NextRequest) {
-    const sessionCookie = request.cookies.get('connect.sid');
+    const sessionCookie = request.cookies.get('session');
     try {
-      if (sessionCookie) {
+      const response = await middlewareCheck(sessionCookie);
+      if (response?.success) {
         const nextResponse = NextResponse.next();        
         return nextResponse;
       } else {
@@ -18,7 +20,7 @@ export async function middleware(request: NextRequest) {
   }
 
 export const config = {
-    matcher: ['/crm'],
+    matcher: ['/home', '/history', '/shoppinglist'],
   };
 
 // export const config = {

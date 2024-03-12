@@ -130,7 +130,7 @@ export default function userDataSet(sanity: SanityClient): Router {
   });
 
   router.get('/getHistory', async (req: Request, res: Response) => {
-      const userId = userInformation._id;
+      const userId = userInformation._id;      
   
       const query = `
           *[_type == "userAiInfo" && userData._ref == $userId]{
@@ -169,7 +169,6 @@ export default function userDataSet(sanity: SanityClient): Router {
           }))
       }));
       recipeNameUsed = result.flatMap((item: any) => item.AiAnswers.map((cookbook: any) => cookbook.recipeName));
-      console.log(recipeNameUsed);
   
       return res.status(200).json({ message: 'Data fetched successfully', result });
   });

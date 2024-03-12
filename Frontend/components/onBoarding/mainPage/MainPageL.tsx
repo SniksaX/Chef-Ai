@@ -63,7 +63,11 @@ export default function Component() {
     getHistory();
   }, []);
 
-  localStorage.setItem("recipes", JSON.stringify(historyData));
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("recipes", JSON.stringify(historyData));
+    }
+  }, [historyData]);
 
   const handleGenerate = async () => {
     setIsLoading(true);

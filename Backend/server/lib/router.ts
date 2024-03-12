@@ -25,8 +25,8 @@ export default function createRouter(sanity: SanityClient): Router {
     }
 
     router.use('/', Auth(sanity))
-    router.use('/', userDataSet(sanity));
-    router.use('/', GetImage());
+    router.use('/', requireAuth, userDataSet(sanity));
+    router.use('/', requireAuth ,GetImage());
     
     router.all('*', async (req, res) => {
         try {

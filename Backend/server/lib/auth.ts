@@ -1,12 +1,41 @@
 //Backend/server/lib/auth.ts
 import express, { Router, Request, Response } from 'express';
 import { SanityClient } from '@sanity/client';
-import bcrypt from 'bcrypt';
+import bcrypt, { hash } from 'bcrypt';
 import passport from 'passport';
+import { userInformation } from '../server';
 
 const router: Router = express.Router();
 
+async function HashPass(userlastName: string){
+    try {
+        if (userlastName){
+            const hashedUser = await bcrypt.hash(userlastName , 10);
+            return hashedUser;
+        }
+        return null;
+    } catch (err) {
+        console.error(err);
+        return null;
+    }
+}
+
 export default function Auth(sanity: SanityClient): Router {
+
+    router.post('/middleware', async (req, res) => {
+        const userlastName = userInformation.lastName;
+        const userlastNameHashed = req.body.value; // Assuming the hashed name is sent back in a cookie
+        if (userlastName && userlastNameHashed) {
+            const result = await bcrypt.compare(userlastName, userlastNameHashed);
+            if (result) {
+                return res.status(200).json({success: true});
+            } else {
+                return res.status(403).json({success: false, message: "Access Denied"});
+            }
+        } else {
+            return res.status(400).json({success: false, message: "Required data missing"});
+        }
+    });
 
     router.post('/userSignIn', async (req: Request, res: Response) => {
         const { firstName, lastName, phone, age, email, password } = req.body;
@@ -40,52 +69,51 @@ export default function Auth(sanity: SanityClient): Router {
         }
     });
 
-    router.post('/userLogin', (req: Request, res: Response, next: any) => {
+    router.post('/userLogin', async (req, res, next) => { // Note the async here
         passport.authenticate('local', async (err: any, user: any) => {
             if (err) {
                 return next(err);
             }
             if (!user) {
-                return res.status(401).json({ error: 'Invalid email or password', type: 'invalidCredentials'  });
+                return res.status(401).json({ error: 'Invalid email or password', type: 'invalidCredentials' });
             }
             req.logIn(user, async (loginErr) => {
                 if (loginErr) {
                     return next(loginErr);
                 }
-            req.session.cookie.maxAge = 24 * 60 * 60 * 3600;
-            // res.cookie('session', {  username: user.lastName }, { httpOnly: true });
-            return res.status(200).json({ message: 'Login successful.' });
+                const userlastNameHashed = await HashPass(user.lastName);
+                req.session.cookie.maxAge = 24 * 60 * 60 * 3600;
+                res.cookie('session', userlastNameHashed, { httpOnly: true }); // Make sure to set a string key for the cookie
+                return res.status(200).json({ message: 'Login successful.' });
             });
         })(req, res, next);
     });
 
-    // router.post('/logout', async (req: Request, res: Response) => {
-    //     try {
-    //         if (req.isAuthenticated()) {
-    //             req.logout();
-    //             res.status(200).json({
-    //                 timestamp: Date.now(),
-    //                 msg: 'Logged out',
-    //                 code: 200,
-    //             });
-    //         } else {
-    //             res.status(403).json({
-    //                 timestamp: Date.now(),
-    //                 error: 'Access Denied',
-    //                 code: 403,
-    //                 msg: 'You must be online and logged in to perform this action.',
-    //             });
-    //         }
-    //     } catch (e) {
-    //         console.error(new Error(e.message));
-    //         res.status(500).json({
-    //             timestamp: Date.now(),
-    //             error: 'Internal Server Error',
-    //             code: 500,
-    //             msg: 'Failed to log out.',
-    //         });
-    //     }
-    //     });
+    router.post('/userLogout', (req, res) => {
+        if (req.isAuthenticated()) {
+            req.logout({}, (err) => {
+                if (err) {
+                    console.error('Logout error:', err);
+                    return res.status(500).json({
+                        error: 'Internal Server Error',
+                        code: 500,
+                        msg: 'Failed to log out.',
+                    });
+                }
+                res.cookie('session', '', { expires: new Date(0), httpOnly: true });
+                res.status(200).json({
+                    msg: 'Logged out successfully',
+                    code: 200,
+                });
+            });
+        } else {
+            res.status(403).json({
+                error: 'Access Denied',
+                code: 403,
+                msg: 'You must be online and logged in to perform this action.',
+            });
+        }
+    });
 
     return (router) ;
 }

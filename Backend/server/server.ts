@@ -9,6 +9,8 @@ import dotenv from 'dotenv';
 import { Strategy as LocalStrategy } from 'passport-local';
 import passport from 'passport';
 import bcrypt from 'bcrypt';
+import cookieParser from 'cookie-parser';
+
 
 
 dotenv.config();
@@ -35,13 +37,14 @@ app.use(cors({
     exposedHeaders: ['Set-Cookie'],
 }));
 
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use(session({
     secret: SECRET_KEY2,
-    resave: false,
-    saveUninitialized: false,
+    resave: true,
+    saveUninitialized: true,
     cookie: {
         secure: process.env.NODE_ENV === "production",
         httpOnly: true, 

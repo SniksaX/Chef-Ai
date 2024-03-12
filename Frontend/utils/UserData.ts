@@ -1,5 +1,27 @@
 import { userDataForm } from "./MyTypes";
 
+export async function middlewareCheck(sessioncookie: any) {
+  console.log(sessioncookie)
+  try {
+      const response = await fetch ('http://localhost:4444/api/middleware', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          "content-type": "application/json",
+      },
+        body: JSON.stringify(sessioncookie)
+      })
+      console.log(response)
+      if (response.ok) {
+        return {success: true};
+      } else {
+        return {success: false};
+      }
+  } catch (error) {
+    console.error(error);
+  };
+}
+
 export async function SetUserData(userData: userDataForm) {
     try {
         const response = await fetch('http://localhost:4444/api/userPrefInfo', {
@@ -20,32 +42,6 @@ export async function SetUserData(userData: userDataForm) {
         console.log(error);
     }
 }
-
-// export function pushImage(imageData: File, onProgress: any) {
-//   return new Promise((resolve, reject) => {
-//     const xhr = new XMLHttpRequest();
-//     xhr.open("POST", "http://localhost:4444/api/pushImage", true);
-//     xhr.withCredentials = true; // If you need credentials
-
-//     xhr.upload.onprogress = (event) => {
-//       if (event.lengthComputable) {
-//         const progress = (event.loaded / event.total) * 100;
-//         onProgress(progress); // Callback function to update progress
-//       }
-//     };
-
-//     xhr.onload = () => {
-//       if (xhr.status === 200) {
-//         resolve(JSON.parse(xhr.responseText));
-//       } else {
-//         reject(new Error("Upload failed: " + xhr.statusText));
-//       }
-//     };
-
-//     xhr.onerror = () => reject(new Error("XMLHttpRequest error: " + xhr.statusText));
-//     xhr.send(imageData); // Send the form data
-//   });
-// }
 
 export async function pushImage(image: FormData) {
   try {
@@ -86,6 +82,25 @@ export async function fetchHistory(){
   } catch (error) {
     console.error("Error pushing file:", error);
     return { success: false, error };
+  }
+}
+
+export async function LogOutUser(){
+  try {
+    const response = await fetch("http://localhost:4444/api/userLogout", {
+      method: "POST",
+      credentials: "include",
+      headers: {"Content-Type": "application"},
+    })
+
+    if (response.ok) {
+      return { success: true}
+    }
+    else {
+      return {success: false}
+    }
+  } catch (error) {
+    console.error(error, "something went wrong")
   }
 }
 
